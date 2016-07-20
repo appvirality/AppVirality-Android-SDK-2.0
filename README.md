@@ -11,7 +11,7 @@ Appvirality Android SDK supports from Android (API level 8) and higher.
 Version History 
 ---------------
 
-Current Version : 1.2.1
+Current Version : 2.0.0
 
 [Version Info](https://github.com/farazAV/AppVirality-Android-SDK-2.0/wiki/Android-SDK-Version-History)
 
@@ -25,6 +25,20 @@ Throughout the document, invitation sender will be called as "Referrer" and rece
 
 Paste AppVirality SDK to the <b>libs</b> folder of your application and then add it as a file dependency for the application module.
 
+OR
+
+Use Gradle dependency for core SDK
+```java
+    compile 'com.appvirality:AppViralitySDK:2.0.0'
+```
+
+OR
+
+If you want to use the default UI with basic customization, please use the following gralde dependency. This includes Core SDK + UI
+
+```java
+    compile 'com.appvirality:AppViralityUI:2.0.0'
+```
 
 <H4>STEP 2 - Set up your AppVirality Keys</H4>
 
