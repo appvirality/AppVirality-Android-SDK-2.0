@@ -34,7 +34,7 @@ Use Gradle dependency for core SDK
 
 OR
 
-If you want to use the default UI with basic customization, please use the following gralde dependency. This includes Core SDK + UI
+Use Gradle dependency for core SDK + Default UI
 
 ```java
     compile 'com.appvirality:AppViralityUI:2.0.0'
