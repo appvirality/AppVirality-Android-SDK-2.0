@@ -1,4 +1,4 @@
-# AppVirality-Android-SDK-2.0
+# AppVirality-Android-SDK-2.0 - Beta
 Referrals &amp; Loyalty Program
 
 <H3>Introduction:</H3>
