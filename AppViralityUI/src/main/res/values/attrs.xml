@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GrowthHackCustomizations">
+        <attr name="av_show_toolbar">
+            <enum name="yes" value="0" />
+            <enum name="no" value="2" />
+        </attr>
+        <attr name="av_toolbar_text_color" format="reference|color" />
+        <attr name="av_toolbar_title" format="string" />
+        <attr name="av_toolbar_terms" format="string" />
+        <attr name="av_earnings_bar_color" format="reference|color" />
+        <attr name="av_show_coupon_pools_bar">
+            <enum name="yes" value="0" />
+            <enum name="no" value="2" />
+        </attr>
+        <attr name="av_show_custom_ref_code_bar">
+            <enum name="yes" value="0" />
+            <enum name="no" value="2" />
+        </attr>
+        <attr name="av_show_friends_bar">
+            <enum name="yes" value="0" />
+            <enum name="no" value="2" />
+        </attr>
+        <attr name="av_show_coupons_bar">
+            <enum name="yes" value="0" />
+            <enum name="no" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

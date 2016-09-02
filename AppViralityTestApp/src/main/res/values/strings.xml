@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">AVTest</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="api_array">
+        <item>Select an API</item>
+        <item>Register</item>
+        <item>GetCampaign</item>
+        <item>SetClickId</item>
+        <item>SaveConversionEvent</item>
+        <item>GetCampaignTerms</item>
+        <item>SetReferrerCode</item>
+        <item>UpdateAppUserInfo</item>
+        <item>RecordAppUserStats</item>
+        <item>RecordSocialActions</item>
+        <item>RecordImpressionsClicks</item>
+        <item>CustomizeReferralCode</item>
+        <item>GetUserBalance</item>
+        <item>GetUserCoupons</item>
+        <item>GetCouponPools</item>
+        <item>RedeemFromPool</item>
+        <item>RequestGetFriends</item>
+        <item>UpdateUserLocationInfo</item>
+    </string-array>
+</resources>

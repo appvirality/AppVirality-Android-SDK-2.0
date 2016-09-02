@@ -1,0 +1,9 @@
+<resources>
+    <!--<dimen name="app_icon_size">96px</dimen>-->
+    <dimen name="campaign_image_margin">8dp</dimen>
+    <dimen name="campaign_title_desc_left_right_margin">15dp</dimen>
+    <dimen name="campaign_title_desc_top_margin">5dp</dimen>
+    <dimen name="campaign_share_code_padding">10dp</dimen>
+    <dimen name="campaign_title_text_size">18sp</dimen>
+    <dimen name="campaign_desc_text_size">15sp</dimen>
+</resources>

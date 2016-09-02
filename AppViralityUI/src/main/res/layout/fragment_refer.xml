@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/appvirality_wom_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#d3d3d3"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/campaign_image_margin"
+        android:layout_marginRight="@dimen/campaign_image_margin"
+        android:layout_marginTop="@dimen/campaign_image_margin">
+
+        <RelativeLayout
+            android:id="@+id/upper_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/white"
+            android:padding="@dimen/campaign_image_margin">
+
+            <RelativeLayout
+                android:id="@+id/img_title_layout"
+                android:layout_width="match_parent"
+                android:layout_height="290dp">
+
+                <ImageView
+                    android:id="@+id/iv_campaign_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/refer_image" />
+
+                <RelativeLayout
+                    android:id="@+id/title_desc_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/campaign_title_desc_left_right_margin"
+                    android:layout_marginRight="@dimen/campaign_title_desc_left_right_margin"
+                    android:layout_marginTop="145dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/campaign_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:text="@string/appvirality_growth_title_text"
+                        android:textColor="#ffffff"
+                        android:textSize="@dimen/campaign_title_text_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/campaign_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/campaign_title"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="@dimen/campaign_title_desc_top_margin"
+                        android:gravity="center"
+                        android:text="@string/appvirality_growth_desc"
+                        android:textColor="#ffffff"
+                        android:textSize="@dimen/campaign_desc_text_size" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/appvirality_share_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_title_layout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/av_ref_code_margin_top"
+                android:background="@drawable/bg_rect_gray"
+                android:gravity="center"
+                android:padding="@dimen/campaign_share_code_padding"
+                android:text="@string/appvirality_growth_code"
+                android:textSize="@dimen/campaign_desc_text_size" />
+
+            <TextView
+                android:id="@+id/appvirality_no_social_installed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/appvirality_share_code"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/campaign_share_code_padding"
+                android:textSize="@dimen/campaign_desc_text_size"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/social_items_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/appvirality_no_social_installed"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:weightSum="4" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/lower_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/upper_layout"
+            android:background="#e9e9e9"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/campaign_share_code_padding"
+                android:text="@string/appvirality_or_label"
+                android:textSize="@dimen/campaign_desc_text_size" />
+
+            <TextView
+                android:id="@+id/appvirality_referral_link_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="1dp"
+                android:text="@string/appvirality_growth_link_title"
+                android:textSize="@dimen/campaign_desc_text_size" />
+
+            <LinearLayout
+                android:id="@+id/appvirality_custom_share_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rect_gray"
+                android:orientation="horizontal"
+                android:padding="@dimen/campaign_share_code_padding">
+
+                <TextView
+                    android:id="@+id/appvirality_share_link"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/appvirality_growth_link"
+                    android:textSize="@dimen/campaign_desc_text_size"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/copy"
+                    android:paddingRight="5dp" />
+            </LinearLayout>
+
+            <!-- Warning : Do not remove this line - Removing this would cause license implications.
+            This will be removed automatically if you go for whiteLabel solution. -->
+
+            <com.appvirality.WhiteLabel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:adjustViewBounds="true" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:text="Share on"
+        android:textSize="15dp" />
+
+    <GridView
+        android:id="@+id/appvirality_gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:horizontalSpacing="5dp"
+        android:isScrollContainer="false"
+        android:numColumns="3"
+        android:paddingTop="10dp"
+        android:paddingBottom="20dp"
+        android:verticalSpacing="15dp" />
+
+</LinearLayout>
