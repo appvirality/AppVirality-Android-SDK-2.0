@@ -11,7 +11,7 @@ Appvirality Android SDK supports from Android (API level 9) and higher.
 Version History 
 ---------------
 
-Current Version : 2.0.0
+Current Version : 2.0.1
 
 [Version Info](https://github.com/farazAV/AppVirality-Android-SDK-2.0/wiki/Android-SDK-Version-History)
 
@@ -26,14 +26,14 @@ Throughout the document, invitation sender will be called as "Referrer" and rece
 Use Gradle dependency for core SDK + Default UI
 
 ```java
-    compile 'com.appvirality:AppViralityUI:2.0.0'
+    compile 'com.appvirality:AppViralityUI:2.0.1'
 ```
 
 OR
 
 Use Gradle dependency for core SDK
 ```java
-    compile 'com.appvirality:AppViralitySDK:2.0.0'
+    compile 'com.appvirality:AppViralitySDK:2.0.1'
 ```
 
 OR
@@ -81,9 +81,6 @@ Once you've registered with AppVirality.com and add a new app, you will be given
 <manifest..>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- Optional permissions. ACCESS_COARSE_LOCATION and ACCESS_FINE_LOCATION are used to send location targeted campaigns to the user. -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Optional permissions. WRITE_EXTERNAL_STORAGE and READ_EXTERNAL_STORAGE are used to improve the performance by storing and reading campaign images. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -173,7 +170,6 @@ userDetails.setMobileNo(mobileNo);
 userDetails.setCity(city);
 userDetails.setState(state);
 userDetails.setCountry(country);
-userDetails.setExistingUser(isExistingUser);
 ```
 
 a) <b>referralCode</b> - <i>String</i>. Referrer's Referral Code  
@@ -408,7 +404,6 @@ userDetails.setMobileNo(mobileNo);
 userDetails.setCity(city);
 userDetails.setState(state);
 userDetails.setCountry(country);
-userDetails.setExistingUser(isExistingUser);
 ```
 
 a) <b>userId</b> —  ID of the user in your App(helps to identify users on dashboard as you do in your app)  
