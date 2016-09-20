@@ -1,23 +1,23 @@
 <resources>
     <string name="app_name">AppViralityUI</string>
 
-    <string name="appvirality_growth_title">Referrals</string>
+    <!--<string name="appvirality_growth_title">Referrals</string>
     <string name="appvirality_growth_title_text">Referrals Title</string>
     <string name="appvirality_growth_desc">Your friend had referred you. please login to claim it.</string>
-    <string name="appvirality_growth_link_title">Your personal referral Link:</string>
     <string name="appvirality_growth_link">www.r.appvirality.com/df/5</string>
     <string name="appvirality_growth_seemore">Show More</string>
-    <string name="appvirality_or_label">OR</string>
     <string name="appvirality_growth_code"></string>
-    <string name="appvirality_user_settings_terms">Terms and Conditions</string>
+    <string name="appvirality_user_settings_terms">Terms and Conditions</string>-->
+    <string name="appvirality_growth_link_title">Your personal referral Link:</string>
+    <string name="appvirality_or_label">OR</string>
 
     <string name="appvirality_welcome_title">You\'ve been invited!</string>
-    <string name="appvirality_welcome_desc">{{username}} has given you Reward $15</string>
-    <string name="appvirality_welcome_btnsignup">Sign Up</string>
-    <string name="appvirality_user_enter_referralcode">Referral code, if you have</string>
-    <string name="appvirality_welcome_text_email">Enter your email id</string>
-    <string name="appvirality_welcome_btnclaim">Claim It</string>
-    <string name="appvirality_welcome_btnskip">Skip</string>
+    <!--<string name="appvirality_welcome_desc">{{username}} has given you Reward $15</string>-->
+    <string name="appvirality_welcome_sign_up">Sign Up</string>
+    <string name="appvirality_welcome_referral_code">Referral code, if you have</string>
+    <string name="appvirality_welcome_email">Enter your email address</string>
+    <string name="appvirality_welcome_claim">Claim It</string>
+    <string name="appvirality_welcome_skip">Skip</string>
 
     <string name="total_earnings_label">Total Earnings</string>
     <string name="claimed_label">Claimed</string>
@@ -37,7 +37,7 @@
     <string name="select_from_coupon_pool">Select a coupon</string>
     <string name="no_coupon_pool">Oops, No coupons are available!</string>
 
-    <string name="appvirality_launch_remid_later">Remind Later</string>
+    <string name="appvirality_launch_remind_later">Remind Later</string>
     <string name="appvirality_launch_refer">Refer</string>
     <string name="appvirality_launch_msg">Refer your friend and earn $5.</string>
 

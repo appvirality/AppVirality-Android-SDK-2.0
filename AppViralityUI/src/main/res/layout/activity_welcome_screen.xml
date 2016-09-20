@@ -52,7 +52,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/appvirality_welcome_desc"
                 android:textColor="#ffffff"
                 android:textSize="18sp" />
 
@@ -65,7 +64,7 @@
                 android:background="@drawable/btn_welcome_claim"
                 android:paddingLeft="26dp"
                 android:paddingRight="26dp"
-                android:text="@string/appvirality_welcome_btnsignup"
+                android:text="@string/appvirality_welcome_sign_up"
                 android:textColor="#ffffff"
                 android:visibility="gone" />
 
@@ -76,7 +75,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/welcome_email_bg"
-                android:hint="@string/appvirality_user_enter_referralcode"
+                android:hint="@string/appvirality_welcome_referral_code"
                 android:paddingLeft="10dp" />
 
             <EditText
@@ -86,7 +85,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/welcome_email_bg"
-                android:hint="@string/appvirality_welcome_text_email"
+                android:hint="@string/appvirality_welcome_email"
                 android:inputType="textEmailAddress"
                 android:paddingLeft="10dp" />
 
@@ -99,7 +98,7 @@
                 android:background="@drawable/btn_welcome_claim"
                 android:paddingLeft="26dp"
                 android:paddingRight="26dp"
-                android:text="@string/appvirality_welcome_btnclaim"
+                android:text="@string/appvirality_welcome_claim"
                 android:textColor="#ffffff" />
         </LinearLayout>
 
@@ -110,7 +109,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="20dp"
             android:layout_marginTop="40dp"
-            android:text="@string/appvirality_welcome_btnskip"
+            android:text="@string/appvirality_welcome_skip"
             android:textColor="#ffffff"
             android:textStyle="bold" />
     </LinearLayout>

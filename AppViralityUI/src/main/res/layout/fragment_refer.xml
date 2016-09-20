@@ -50,7 +50,6 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:gravity="center"
-                        android:text="@string/appvirality_growth_title_text"
                         android:textColor="#ffffff"
                         android:textSize="@dimen/campaign_title_text_size"
                         android:textStyle="bold" />
@@ -63,7 +62,6 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/campaign_title_desc_top_margin"
                         android:gravity="center"
-                        android:text="@string/appvirality_growth_desc"
                         android:textColor="#ffffff"
                         android:textSize="@dimen/campaign_desc_text_size" />
 
@@ -81,7 +79,6 @@
                 android:background="@drawable/bg_rect_gray"
                 android:gravity="center"
                 android:padding="@dimen/campaign_share_code_padding"
-                android:text="@string/appvirality_growth_code"
                 android:textSize="@dimen/campaign_desc_text_size" />
 
             <TextView
@@ -146,7 +143,6 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="@string/appvirality_growth_link"
                     android:textSize="@dimen/campaign_desc_text_size"
                     android:textStyle="bold" />
 

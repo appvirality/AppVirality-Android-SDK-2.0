@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -72,20 +71,6 @@ public class Utils {
         } catch (Exception e) {
         }
         return false;
-    }
-
-    public String readAppViralityApiKey() {
-        String avApiKey = null;
-        String metaDataKey = "com.appvirality.sdk.AppViralityApiKey";
-        try {
-            final ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-            if (ai.metaData != null) {
-                avApiKey = ai.metaData.getString(metaDataKey);
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return avApiKey;
     }
 
     public void downloadAndSetImage(String imageUrl, ImageView imgView) {
@@ -272,17 +257,17 @@ public class Utils {
         return false;
     }
 
-    public ArrayList<CampaignDetail> updateCampaignDetails(ArrayList<CampaignDetail> campaignDetails, CampaignDetail campaignDetail) {
-        for (int i = 0; i < campaignDetails.size(); i++) {
-            CampaignDetail detail = campaignDetails.get(i);
-            if (detail.growthHackType == campaignDetail.growthHackType) {
-                campaignDetails.remove(i);
-                campaignDetails.add(i, campaignDetail);
-                break;
-            }
-        }
-        return campaignDetails;
-    }
+//    public ArrayList<CampaignDetail> updateCampaignDetails(ArrayList<CampaignDetail> campaignDetails, CampaignDetail campaignDetail) {
+//        for (int i = 0; i < campaignDetails.size(); i++) {
+//            CampaignDetail detail = campaignDetails.get(i);
+//            if (detail.growthHackType == campaignDetail.growthHackType) {
+//                campaignDetails.remove(i);
+//                campaignDetails.add(i, campaignDetail);
+//                break;
+//            }
+//        }
+//        return campaignDetails;
+//    }
 
     public TextView getNoInfoTextView(String message, int margin) {
         TextView tvNoData = new TextView(context);

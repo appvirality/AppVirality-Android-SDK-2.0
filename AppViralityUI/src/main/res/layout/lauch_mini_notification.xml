@@ -15,7 +15,7 @@
             android:layout_height="46dp"
             android:layout_weight="0.5"
             android:background="@drawable/btn_launch_bg"
-            android:text="@string/appvirality_launch_remid_later"
+            android:text="@string/appvirality_launch_remind_later"
             android:textColor="#ffffff"
             android:textSize="13sp" />
 
