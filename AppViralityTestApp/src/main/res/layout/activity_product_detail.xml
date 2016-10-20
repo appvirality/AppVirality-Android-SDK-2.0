@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/offer_desc_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#3368FF"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <com.appvirality.appviralityui.custom.RoundedImageView
+                android:id="@+id/iv_product_referrer"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/user_image" />
+
+            <TextView
+                android:id="@+id/tv_product_offer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@id/iv_product_referrer"
+                android:gravity="center"
+                android:text="You friend Sam has shared this product with you. If you buy you get Rs50, he gets Rs10."
+                android:textColor="@android:color/white" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_product_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/offer_desc_layout"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/tv_product_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_product_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
+
+        <RelativeLayout
+            android:id="@+id/product_sharing_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_product_title"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="8dp"
+            android:background="@drawable/btn_welcome_claim"
+            android:padding="8dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_share_campaign_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/iv_share_campaign" />
+
+            <ImageView
+                android:id="@+id/iv_share_campaign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/share" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

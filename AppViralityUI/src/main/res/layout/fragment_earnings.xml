@@ -13,14 +13,15 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TableLayout
-            android:id="@+id/appvirality_user_earnings"
+        <LinearLayout
+            android:id="@+id/earnings_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/user_settings">
+            android:background="@drawable/user_settings"
+            android:orientation="vertical">
 
-            <TableRow
-                android:id="@+id/tr_earnings_header"
+            <LinearLayout
+                android:id="@+id/earnings_header_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -31,47 +32,6 @@
                     android:gravity="left|center_vertical"
                     android:text="@string/earnings_label"
                     android:textColor="#ffffff" />
-            </TableRow>
-
-            <LinearLayout
-                android:id="@+id/appvirality_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="16dp"
-                android:background="#ffffff"
-                android:gravity="center">
-
-                <ProgressBar
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/appvirality_userearnings_network_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/appvirality_no_network_message"
-                    android:textColor="#000000" />
-
-                <Button
-                    android:id="@+id/appvirality_earnings_reload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/btn_enabled"
-                    android:padding="8dp"
-                    android:text="@string/appvirality_btn_reload"
-                    android:textColor="#ffffff" />
             </LinearLayout>
 
             <LinearLayout
@@ -80,13 +40,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
 
-        </TableLayout>
+        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/coupon_pool_layout"
+            android:id="@+id/coupon_pools_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/appvirality_user_earnings"
+            android:layout_below="@id/earnings_layout"
             android:layout_marginTop="10dp"
             android:background="@drawable/user_settings"
             android:orientation="vertical"
@@ -117,86 +77,32 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/coupon_pools_tbl"
+                android:id="@+id/coupon_pools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:orientation="vertical" />
-
-            <LinearLayout
-                android:id="@+id/coupon_pool_progress_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/user_settings"
-                android:gravity="center"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/coupon_pool_no_coupons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/no_coupon_pool"
-                    android:textColor="#000000"
-                    android:visibility="gone" />
-
-                <ProgressBar
-                    android:id="@+id/coupon_pool_progressbar"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="invisible" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/coupon_pool_network_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/appvirality_no_network_message"
-                    android:textColor="#000000" />
-
-                <Button
-                    android:id="@+id/coupon_pool_reload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/btn_enabled"
-                    android:padding="8dp"
-                    android:text="@string/appvirality_btn_reload"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
+                android:visibility="gone" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/custom_url_layout"
+            android:id="@+id/custom_ref_code_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/coupon_pool_layout"
+            android:layout_below="@id/coupon_pools_layout"
             android:layout_marginTop="10dp"
             android:background="@drawable/user_settings"
             android:orientation="vertical"
             android:visibility="?attr/av_show_custom_ref_code_bar">
 
             <LinearLayout
-                android:id="@+id/appvirality_custom_link_top"
+                android:id="@+id/custom_ref_code_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/appvirality_details"
                     android:layout_width="0dp"
                     android:layout_height="36dp"
                     android:layout_marginLeft="15dp"
@@ -206,7 +112,7 @@
                     android:textColor="#ffffff" />
 
                 <ImageView
-                    android:id="@+id/appvirality_dropdown1"
+                    android:id="@+id/custom_ref_code_dropdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center"
@@ -215,7 +121,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/appvirality_custom_link_layout"
+                android:id="@+id/custom_ref_code_inner_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
@@ -223,41 +129,23 @@
                 android:orientation="horizontal"
                 android:visibility="gone">
 
-                <!--<LinearLayout
+                <EditText
+                    android:id="@+id/edit_ref_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:background="@drawable/edittext_bg"
-                    android:orientation="horizontal"
-                    android:padding="8dp">-->
-
-                    <EditText
-                        android:id="@+id/appvirality_custom_param"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp"
-                        android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp"
-                        android:minWidth="120dp"
-                        android:background="@drawable/edittext_bg"
-                        android:cursorVisible="true"
-                        android:digits="0123456789qwertzuiopasdfghjklyxcvbnm"
-                        android:maxLength="10"
-                        android:textColor="#000000"
-                        android:textSize="15sp" />
-
-                    <!--<TextView
-                        android:id="@+id/tv_ref_code_fixed"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="15sp" />
-
-                </LinearLayout>-->
+                    android:cursorVisible="true"
+                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnm"
+                    android:maxLength="10"
+                    android:minWidth="120dp"
+                    android:padding="10dp"
+                    android:textColor="#000000"
+                    android:textSize="15sp" />
 
                 <Button
-                    android:id="@+id/appvirality_savelink"
+                    android:id="@+id/btn_save_ref_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/btn"
@@ -266,7 +154,7 @@
                     android:textColor="#ffffff" />
 
                 <ProgressBar
-                    android:id="@+id/appvirality_progressbar"
+                    android:id="@+id/progress_bar_ref_code"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -275,41 +163,20 @@
                     android:visibility="invisible" />
             </LinearLayout>
 
-            <!--<LinearLayout
-                android:id="@+id/appvirality_custom_link_btn_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:background="@drawable/av_ui_textarea"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/appvirality_custom_link"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/share_url_label"
-                    android:textColor="#000000"
-                    android:textSize="12sp" />
-            </LinearLayout>-->
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/user_friends_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/custom_url_layout"
+            android:layout_below="@id/custom_ref_code_layout"
             android:layout_marginTop="10dp"
             android:background="@drawable/user_settings"
             android:orientation="vertical"
             android:visibility="?attr/av_show_friends_bar">
 
             <LinearLayout
-                android:id="@+id/appvirality_settings_friends"
+                android:id="@+id/friends_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -324,7 +191,7 @@
                     android:textColor="#ffffff" />
 
                 <ImageView
-                    android:id="@+id/appvirality_dropdown2"
+                    android:id="@+id/friends_dropdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center"
@@ -332,69 +199,55 @@
                     android:background="@drawable/drop_down_img" />
             </LinearLayout>
 
-            <TableLayout
-                android:id="@+id/appvirality_tblrewarded"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#ffffff"
-                android:shrinkColumns="1"
-                android:stretchColumns="1" />
-
             <LinearLayout
-                android:id="@+id/appvirality_progress_friends_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/user_settings"
-                android:gravity="center"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/appvirality_no_friends"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/no_friends_label"
-                    android:textColor="#000000"
-                    android:visibility="gone" />
-
-                <ProgressBar
-                    android:id="@+id/appvirality_progressbar_friends"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="invisible" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/user_friends_network_message"
+                android:id="@+id/friends_inner_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <TableLayout
+                    android:id="@+id/friends_table"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/appvirality_no_network_message"
-                    android:textColor="#000000" />
+                    android:background="#ffffff"
+                    android:shrinkColumns="1"
+                    android:stretchColumns="1" />
 
-                <Button
-                    android:id="@+id/user_friends_reload"
+                <LinearLayout
+                    android:id="@+id/prev_next_btn_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/btn_enabled"
-                    android:padding="8dp"
-                    android:text="@string/appvirality_btn_reload"
-                    android:textColor="#ffffff" />
+                    android:layout_gravity="right"
+                    android:layout_margin="8dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_prev_friends"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btn"
+                        android:padding="5dp"
+                        android:text="Prev"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/tv_next_friends"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/btn"
+                        android:padding="5dp"
+                        android:text="Next"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
             </LinearLayout>
-        </LinearLayout>
 
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/user_coupons_layout"
@@ -407,7 +260,7 @@
             android:visibility="?attr/av_show_coupons_bar">
 
             <LinearLayout
-                android:id="@+id/appvirality_coupons_layout"
+                android:id="@+id/user_coupons_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -422,7 +275,7 @@
                     android:textColor="#ffffff" />
 
                 <ImageView
-                    android:id="@+id/appvirality_dropdown_coupon"
+                    android:id="@+id/user_coupons_dropdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center"
@@ -430,66 +283,22 @@
                     android:background="@drawable/drop_down_img" />
             </LinearLayout>
 
-            <TableLayout
-                android:id="@+id/appvirality_tblcoupons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#ffffff"
-                android:stretchColumns="0,1" />
-
             <LinearLayout
-                android:id="@+id/appvirality_progress_coupon_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/user_settings"
-                android:gravity="center"
-                android:paddingBottom="16dp"
-                android:paddingTop="16dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/appvirality_nocoupons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/no_coupons_label"
-                    android:textColor="#000000"
-                    android:visibility="gone" />
-
-                <ProgressBar
-                    android:id="@+id/appvirality_progressbar_cpn"
-                    style="?android:attr/progressBarStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="invisible" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/user_coupons_network_message"
+                android:id="@+id/user_coupons_inner_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <TableLayout
+                    android:id="@+id/user_coupons_table"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/appvirality_no_network_message"
-                    android:textColor="#000000" />
+                    android:background="#ffffff"
+                    android:stretchColumns="0,1" />
 
-                <Button
-                    android:id="@+id/user_coupons_reload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/btn_enabled"
-                    android:padding="8dp"
-                    android:text="@string/appvirality_btn_reload"
-                    android:textColor="#ffffff" />
             </LinearLayout>
+
         </LinearLayout>
 
         <ProgressBar

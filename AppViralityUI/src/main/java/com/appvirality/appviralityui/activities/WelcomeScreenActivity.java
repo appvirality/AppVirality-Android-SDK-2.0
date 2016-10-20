@@ -58,7 +58,7 @@ public class WelcomeScreenActivity extends Activity {
             Button btnSignUp = (Button) findViewById(R.id.appvirality_btnsignup);
 
             editTextRefCode = (EditText) findViewById(R.id.editTextReferralCode);
-            String refCode = referrerDetails.getString("referral_code");
+            String refCode = appVirality.getReferrerRefCode();
             if (!TextUtils.isEmpty(refCode)) {
                 editTextRefCode.setText(refCode.toUpperCase());
             }
@@ -120,30 +120,22 @@ public class WelcomeScreenActivity extends Activity {
                 public void onClick(View v) {
                     setResult(RESULT_OK);
                     //Please add the following code block in your Registration page after successful registration.
-                    /*appVirality.getCampaigns(Constants.GrowthHackType.All, new AppVirality.CampaignDetailsReadyListener() {
+                    /*appVirality.getCampaigns(Constants.GrowthHackType.Word_of_Mouth, new AppVirality.CampaignDetailsListener() {
                         @Override
                         public void onGetCampaignDetails(ArrayList<CampaignDetail> campaignDetails, boolean refreshImages, String errorMsg) {
-                            if (campaignDetails.size() == 0)
+                            if (campaignDetails.size() > 0) {
+                                CampaignDetail womCampaignDetail = campaignDetails.get(0);
+                                if (refreshImages)
+                                    utils.refreshImages(womCampaignDetail);
+                                appVirality.saveConversionEvent("signup", null, null, womCampaignDetail.campaignId, Constants.GrowthHackType.Word_of_Mouth, new AppVirality.ConversionEventListener() {
+                                    @Override
+                                    public void onResponse(boolean isSuccess, String message, String errorMsg) {
+                                        dismissProgressDialog();
+                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            } else {
                                 dismissProgressDialog();
-                            if (refreshImages)
-                                utils.refreshImages(utils.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails));
-                            for (Constants.GrowthHackType growthHackType : Constants.GrowthHackType.values()) {
-                                if (growthHackType != Constants.GrowthHackType.All) {
-                                    CampaignDetail campaignDetail = utils.getCampaignDetail(growthHackType, campaignDetails);
-                                    String campaignId = null;
-                                    if (campaignDetail != null)
-                                        campaignId = campaignDetail.campaignId;
-                                    appVirality.claimSignUpReward(campaignId, growthHackType, new AppVirality.ConversionEventListener() {
-                                        @Override
-                                        public void onResponse(boolean isSuccess, String message, String errorMsg) {
-                                            try {
-                                                dismissProgressDialog();
-                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                            } catch (Exception e) {
-                                            }
-                                        }
-                                    });
-                                }
                             }
                         }
                     });*/

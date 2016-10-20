@@ -17,16 +17,14 @@ import java.util.ArrayList;
 public class GridViewAdapter extends ArrayAdapter<Items> {
     private Context context;
     private int layoutResourceId;
-    private boolean isCustomTemplate;
     private ArrayList<Items> socialActions = new ArrayList<>();
 
     public GridViewAdapter(Context context, int layoutResourceId,
-                           ArrayList<Items> socialActions, boolean isCustomTemplate) {
+                           ArrayList<Items> socialActions) {
         super(context, layoutResourceId, socialActions);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
         this.socialActions = socialActions;
-        this.isCustomTemplate = isCustomTemplate;
     }
 
     @Override
@@ -46,7 +44,7 @@ public class GridViewAdapter extends ArrayAdapter<Items> {
 
         Items item = socialActions.get(position);
         holder.title.setText(item.appname);
-//		if(!isCustomTemplate && item.getTitleColor() != -1)
+//		if(item.getTitleColor() != -1)
 //			holder.title.setTextColor(item.getTitleColor());
         holder.logo.setImageDrawable(context.getPackageManager().getDrawable(item.packagename, item.resId, null));
         return row;

@@ -3,6 +3,7 @@ package com.appvirality.appviralitytest;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -77,8 +78,8 @@ public class InitActivity extends AppCompatActivity implements View.OnClickListe
                     utils.dismissProgressDialog();
                     try {
                         String toastMsg;
-                        if (responseData != null){
-                            if (responseData.getBoolean("isExistingUser")){
+                        if (responseData != null) {
+                            if (responseData.getBoolean("isExistingUser")) {
                                 toastMsg = "User already exists";
                             } else {
                                 toastMsg = "Its a new user";
@@ -111,17 +112,23 @@ public class InitActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onInitFinished(boolean isInitialized, JSONObject responseData, String errorMsg) {
                     Toast.makeText(InitActivity.this, "Init Status: " + isInitialized, Toast.LENGTH_LONG).show();
-                    Log.i("AppVirality: ", "InitWithAppKey Status " + isInitialized);
+                    Log.i("AppVirality: ", "Init Status " + isInitialized);
                     if (responseData != null)
                         Log.i("AppVirality: ", "userDetails " + responseData.toString());
-                    if(isInitialized)
-                    {
+                    String productSharingReferrer = appVirality.getProductSharingReferrer();
+                    if (productSharingReferrer == null) {
                         startActivity(new Intent(InitActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Intent intent = new Intent(InitActivity.this, ProductDetailActivity.class);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        String deepLink = getString(R.string.product_sharing_scheme) + "://" + getString(R.string.product_sharing_host) + "?referrer=" + productSharingReferrer;
+                        intent.setData(Uri.parse(deepLink));
+                        startActivity(intent);
                         finish();
                     }
                 }
             });
-
         }
     }
 

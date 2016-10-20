@@ -36,8 +36,8 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="appvirality_slide_activity">
-        <item name="android:windowEnterAnimation">@anim/av_ui_popup_show</item>
-        <item name="android:windowExitAnimation">@anim/av_ui_popup_hide</item>
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
 </resources>

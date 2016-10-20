@@ -25,20 +25,22 @@ public class GcmRegistrationIntentService extends IntentService {
     String SENDER_ID = "667746729160";
     public static final String PROPERTY_PUSH_TOKEN = "push_token";
     String token;
-    AppVirality appVirality = AppVirality.getInstance(this);
+    AppVirality appVirality;
 
     public GcmRegistrationIntentService() {
         super(TAG);
+        appVirality = AppVirality.getInstance(this);
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        boolean shouldRefreshToken = intent.getBooleanExtra("should_refresh_token", false);
         try {
             if (checkPlayServices()) {
                 if (!checkGCMConfiguration())
                     return;
                 token = getRegistrationId();
-                if (TextUtils.isEmpty(token)) {
+                if (TextUtils.isEmpty(token) || shouldRefreshToken) {
                     InstanceID instanceID = InstanceID.getInstance(this);
                     token = instanceID.getToken(SENDER_ID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                     storePushToken();

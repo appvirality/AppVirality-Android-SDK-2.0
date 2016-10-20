@@ -99,8 +99,8 @@ public class ReferFragment extends Fragment {
                 int leftRightMargin = (int) getResources().getDimension(R.dimen.campaign_title_desc_left_right_margin);
                 params.setMargins(leftRightMargin, newHeight / 2, leftRightMargin, Math.abs((int) getResources().getDimension(R.dimen.av_ref_code_margin_top)));
 
-                txtOfferTitle.setText(Html.fromHtml("<b>" + womCampaignDetail.offerTitle + "</b>"));
-                txtOfferDescription.setText(Html.fromHtml(womCampaignDetail.offerDescription));
+                txtOfferTitle.setText(Html.fromHtml("<b>" + womCampaignDetail.campaignTitle + "</b>"));
+                txtOfferDescription.setText(Html.fromHtml(womCampaignDetail.campaignDescription));
                 if (womCampaignDetail.noSocialActionsFound) {
                     txtNoSocialInstalled.setText(womCampaignDetail.noSocialActionsMessage);
                     txtNoSocialInstalled.setVisibility(View.VISIBLE);
@@ -152,41 +152,41 @@ public class ReferFragment extends Fragment {
 
                 addUpperSocialItems(inflater);
 
-                if (!womCampaignDetail.isCustomTemplate) {
-                    if (!TextUtils.isEmpty(womCampaignDetail.campaignBgColor)){
-                        upperLayout.setBackgroundColor(Color.parseColor(womCampaignDetail.campaignBgColor));
-                    }
-                    if (!TextUtils.isEmpty(womCampaignDetail.offerTitleColor))
-                        txtOfferTitle.setTextColor(Color.parseColor(womCampaignDetail.offerTitleColor));
-                    if (!TextUtils.isEmpty(womCampaignDetail.offerDescriptionColor))
-                        txtOfferDescription.setTextColor(Color.parseColor(womCampaignDetail.offerDescriptionColor));
-//                    txtNoSocialInstalled.setTextColor(Color.parseColor(womCampaignDetail.offerDescriptionColor));
-//                    ((TextView) view.findViewById(R.id.appvirality_referral_link_title)).setTextColor(Color.parseColor(womCampaignDetail.offerTitleColor));
-//                    txtShareLink.setTextColor(Color.parseColor(womCampaignDetail.offerDescriptionColor));
-//                    txtShareCode.setTextColor(Color.parseColor(womCampaignDetail.offerDescriptionColor));
-                    int bgDrawableId = R.drawable.bg_rect_gray;
+//                if (!womCampaignDetail.isCustomTemplate) {
+                if (!TextUtils.isEmpty(womCampaignDetail.campaignBgColor)) {
+                    upperLayout.setBackgroundColor(Color.parseColor(womCampaignDetail.campaignBgColor));
+                }
+//                    if (!TextUtils.isEmpty(womCampaignDetail.campaignTitleColor))
+//                        txtOfferTitle.setTextColor(Color.parseColor(womCampaignDetail.campaignTitleColor));
+                if (!TextUtils.isEmpty(womCampaignDetail.campaignDescriptionColor))
+                    txtOfferDescription.setTextColor(Color.parseColor(womCampaignDetail.campaignDescriptionColor));
+//                    txtNoSocialInstalled.setTextColor(Color.parseColor(womCampaignDetail.campaignDescriptionColor));
+//                    ((TextView) view.findViewById(R.id.appvirality_referral_link_title)).setTextColor(Color.parseColor(womCampaignDetail.campaignTitleColor));
+//                    txtShareLink.setTextColor(Color.parseColor(womCampaignDetail.campaignDescriptionColor));
+//                    txtShareCode.setTextColor(Color.parseColor(womCampaignDetail.campaignDescriptionColor));
+                int bgDrawableId = R.drawable.bg_rect_gray;
 //                    if (!TextUtils.isEmpty(womCampaignDetail.campaignBgColor) ? Color.parseColor(womCampaignDetail.campaignBgColor) == Color.WHITE : false)
 //                        bgDrawableId = R.drawable.av_ui_bg_rect_gray;
-                    if (android.os.Build.VERSION.SDK_INT >= 16) {
-                        referralShareUrl.setBackground(getResources().getDrawable(bgDrawableId));
-                        txtShareCode.setBackground(getResources().getDrawable(bgDrawableId));
+                if (android.os.Build.VERSION.SDK_INT >= 16) {
+                    referralShareUrl.setBackground(getResources().getDrawable(bgDrawableId));
+                    txtShareCode.setBackground(getResources().getDrawable(bgDrawableId));
 //                        if (campaignDetails.CampaignImage != null)
 //                            campaignImage.setBackground(new BitmapDrawable(getResources(), campaignDetails.CampaignImage));
 //                        if (campaignDetails.CampaignBGImage != null)
 //                            findViewById(R.id.appvirality_wom_bg).setBackground(new BitmapDrawable(getResources(), campaignDetails.CampaignBGImage));
-                    } else {
-                        referralShareUrl.setBackgroundDrawable(getResources().getDrawable(bgDrawableId));
-                        txtShareCode.setBackgroundDrawable(getResources().getDrawable(bgDrawableId));
+                } else {
+                    referralShareUrl.setBackgroundDrawable(getResources().getDrawable(bgDrawableId));
+                    txtShareCode.setBackgroundDrawable(getResources().getDrawable(bgDrawableId));
 //                        if (campaignDetails.CampaignImage != null)
 //                            campaignImage.setBackgroundDrawable(new BitmapDrawable(campaignDetails.CampaignImage));
 //                        if (campaignDetails.CampaignBGImage != null)
 //                            findViewById(R.id.appvirality_wom_bg).setBackgroundDrawable(new BitmapDrawable(campaignDetails.CampaignBGImage));
-                    }
+                }
 
 //                    if (/*campaignDetails.CampaignBGImage == null &&*/ !TextUtils.isEmpty(womCampaignDetail.campaignBgColor)) {
 //                        view.findViewById(R.id.appvirality_wom_bg).setBackgroundColor(Color.parseColor(womCampaignDetail.campaignBgColor));
 //                    }
-                }
+//                }
             } else {
                 getActivity().finish();
             }
@@ -243,7 +243,7 @@ public class ReferFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.custom_share_dialog, null, false);
         GridView gridView = (GridView) view.findViewById(R.id.appvirality_gridView);
-        GridViewAdapter adapter = new GridViewAdapter(getActivity(), R.layout.grid_item, womCampaignDetail.allSocialActions, womCampaignDetail.isCustomTemplate);
+        GridViewAdapter adapter = new GridViewAdapter(getActivity(), R.layout.grid_item, womCampaignDetail.allSocialActions);
         gridView.setAdapter(adapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

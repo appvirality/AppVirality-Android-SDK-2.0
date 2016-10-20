@@ -4,8 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -40,6 +38,23 @@
         <activity
             android:name="com.appvirality.appviralityui.activities.GrowthHackActivity"
             android:theme="@style/AVTheme" />
+        <activity
+            android:name=".ProductDetailActivity"
+            android:label="Product Detail">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/product_sharing_host"
+                    android:scheme="@string/product_sharing_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ProductListingActivity"
+            android:label="Products" />
         <activity android:name="com.appvirality.appviralityui.activities.WebViewActivity" />
         <activity
             android:name=".RegistrationActivity"
@@ -72,7 +87,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.appvirality.appviralitytestapp" />
+                <category android:name="com.appvirality.appviralitytest" />
             </intent-filter>
         </receiver>
 

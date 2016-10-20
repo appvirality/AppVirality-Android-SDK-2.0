@@ -66,7 +66,7 @@ public class CustomPopUp {
             ImageView launchIcon = (ImageView) launchBarLayout.findViewById(R.id.appvirality_launchimage);
             launchIcon.setImageResource(getLaunchIcon(womCampaignDetail.launchIconId));
             TextView txtLaunchMessage = (TextView) launchBarLayout.findViewById(R.id.appvirality_txtlaunchmessage);
-            txtLaunchMessage.setText(Html.fromHtml(TextUtils.isEmpty(womCampaignDetail.launchMessage) ? womCampaignDetail.offerTitle : womCampaignDetail.launchMessage));
+            txtLaunchMessage.setText(Html.fromHtml(TextUtils.isEmpty(womCampaignDetail.launchMessage) ? womCampaignDetail.campaignTitle : womCampaignDetail.launchMessage));
             if (womCampaignDetail.launchMsgColor != null)
                 txtLaunchMessage.setTextColor(Color.parseColor(womCampaignDetail.launchMsgColor));
             if (!TextUtils.isEmpty(womCampaignDetail.remindBtnTxt))

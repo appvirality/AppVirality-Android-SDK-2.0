@@ -85,7 +85,7 @@ public class Utils {
         }
     }
 
-    private Bitmap downloadImage(String imageUrl, ImageView imageView) {
+    private Bitmap downloadImage(String imageUrl) {
         int number = 0;
         boolean succeeded = false;
         Bitmap bitmapImage = null;
@@ -95,7 +95,6 @@ public class Utils {
                 bitmapImage = BitmapFactory.decodeStream(in);
                 in.close();
                 succeeded = true;
-                imageView.setImageBitmap(bitmapImage);
             } catch (SocketTimeoutException e) {
                 Log.d(TAG, "" + e.getMessage());
             } catch (Exception e) {
@@ -136,7 +135,10 @@ public class Utils {
         try {
             File f = new File(directory, imageName);
             if (f.exists()) {
+                Log.d("Image", "Exists");
                 bitmap = BitmapFactory.decodeStream(new FileInputStream(f));
+            } else {
+                Log.d("Image", "Does Not Exists");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -283,7 +285,7 @@ public class Utils {
     public void refreshImages(CampaignDetail campaignDetail) {
         if (campaignDetail != null) {
             downloadAndSaveImage(campaignDetail.campaignImgUrl, campaignDetail.campaignId + "-" + campaignDetail.campaignImgUrl.substring(campaignDetail.campaignImgUrl.lastIndexOf("/") + 1));
-            downloadAndSaveImage(campaignDetail.campaignBgImgUrl, campaignDetail.campaignId + "-" + campaignDetail.campaignBgImgUrl);
+//            downloadAndSaveImage(campaignDetail.campaignBgImgUrl, campaignDetail.campaignId + "-" + campaignDetail.campaignBgImgUrl);
             for (SocialAction socialAction : campaignDetail.campaignSocialActions) {
                 if (socialAction.socialActionName.equalsIgnoreCase("instagram")) {
                     downloadAndSaveImage(socialAction.shareImageUrl, campaignDetail.campaignId + "-" + "instagram");
@@ -308,7 +310,7 @@ public class Utils {
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            Bitmap bitmap = downloadImage(params[0], null);
+            Bitmap bitmap = downloadImage(params[0]);
             if (params[1] != null)
                 saveImageToExternalStorage(context, bitmap, params[1]);
             return bitmap;

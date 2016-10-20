@@ -57,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_invite_friends:
                 utils.showGrowthHack(appVirality);
                 break;
-            
+            case R.id.btn_product_sharing:
+                startActivity(new Intent(MainActivity.this, ProductListingActivity.class));
+                break;
             case R.id.btn_popup:
                 showCustomPopUp();
                 break;
@@ -121,9 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         appVirality.getCampaigns(null, new AppVirality.CampaignDetailsListener() {
             @Override
             public void onGetCampaignDetails(ArrayList<CampaignDetail> campaignDetails, boolean refreshImages, String errorMsg) {
-                if (refreshImages)
-                    utils.refreshImages(appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails));
                 CampaignDetail womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
+                if (refreshImages) {
+                    utils.refreshImages(womCampaignDetail);
+                }
                 if (womCampaignDetail != null) {
                     if (appVirality.checkUserTargeting(womCampaignDetail, false))
                         customPopUp.showPopUp(campaignDetails, womCampaignDetail);

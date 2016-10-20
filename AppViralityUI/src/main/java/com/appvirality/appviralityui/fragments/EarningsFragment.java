@@ -43,37 +43,46 @@ import com.appvirality.appviralityui.custom.RoundedImageView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by AppVirality on 3/28/2016.
+ * Created by AppVirality on 10/5/2016.
  */
 public class EarningsFragment extends Fragment {
 
-    private boolean friendsVisible, couponsVisible, couponPoolVisible;
-    CampaignDetail womCampaignDetail;
-    ArrayList<CampaignDetail> campaignDetails;
-    private EditText edUserParms;
-    //    private TextView tvRefCodeFixed;
-    private GradientDrawable grdEarnings, grdLinkBG, grdFriends, grdCoupons, grdCouponPool;
-    private ProgressBar progress, progressBarFriends, progressBarCoupons, progressBar, progressBarCouponPool;
-    private ImageView ddCustomLink, ddReferredUsers, ddCoupon, ddCouponPool;
-    private TableLayout tblFriends, tblUserRewards;
-    private LinearLayout linkLayout, earningsRetry, referrersDetails, link, friendsNetFailLayout, userCouponsNetFailLayout, couponPoolNetFailLayout, tblCouponPool, allEarningsLayout, customUrlLayout;
-    private LinearLayout couponLayout, friendsLoading, couponsLoading, couponPoolLoading, couponPoolLayout;
-    private TableLayout tblCoupons;
-    TableRow trEarningsHeader;
     AppVirality appVirality;
-    View fragmentView;
+    ArrayList<CampaignDetail> campaignDetails;
+    CampaignDetail womCampaignDetail;
+    boolean isEarnings;
+    LinearLayout userEarningsLayout, allEarningsLayout;
+    HashMap<String, Integer> userPendingRewards = new HashMap<>();
     LayoutInflater inflater;
     Utils utils;
+    View fragmentView;
     DisplayMetrics metrics;
-    boolean isEarnings;
-    HashMap<String, Integer> userPendingRewards = new HashMap<>();
     int earningsBarColor;
-    Button btnSaveLink;
+    GradientDrawable grdTwoRounded, grdFourRounded;
+    LinearLayout couponPoolsLayout, friendsLayout, userCouponsLayout;
+    LinearLayout earningsHeader, couponPoolsHeader, customRefCodeHeader, friendsHeader, userCouponsHeader;
+    LinearLayout couponPools, customRefCodeInnerLayout, friendsInnerLayout, userCouponsInnerLayout;
+    LinearLayout prevNextBtnLayout;
+    View activeHeader, activeLayout;
+    ImageView activeDropDown;
+    EditText editRefCode;
+    Button btnSaveRefCode;
+    ProgressBar progressBar, progressBarRefCode;
+    TableLayout friendsTable, userCouponsTable;
+    int pageIndex = 1, pageSize = 5;
+    TextView tvPrev, tvNext;
+    boolean isReload;
+
+    enum TabName {
+        Earnings,
+        CouponPools,
+        Friends,
+        UserCoupons
+    }
 
     public EarningsFragment() {
         appVirality = AppVirality.getInstance(getActivity());
@@ -81,376 +90,75 @@ public class EarningsFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        campaignDetails = (ArrayList<CampaignDetail>) getArguments().getSerializable("campaign_details");
-        isEarnings = getArguments().getBoolean("is_earnings", false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        this.inflater = inflater;
+        utils = new Utils(getActivity());
         metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         int[] attrs = {R.attr.av_earnings_bar_color};
         TypedArray typedValue = getActivity().obtainStyledAttributes(attrs);
         earningsBarColor = typedValue.getColor(0, Color.BLACK);
+        grdTwoRounded = new GradientDrawable();
+        grdFourRounded = new GradientDrawable();
+        grdTwoRounded.setColor(earningsBarColor);
+        grdFourRounded.setColor(earningsBarColor);
+        grdTwoRounded.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
+        grdFourRounded.setCornerRadius(10);
+        campaignDetails = (ArrayList<CampaignDetail>) getArguments().getSerializable("campaign_details");
+        isEarnings = getArguments().getBoolean("is_earnings", false);
         final View view = inflater.inflate(R.layout.fragment_earnings, container, false);
+        userEarningsLayout = (LinearLayout) view.findViewById(R.id.earnings_layout);
+        earningsHeader = (LinearLayout) view.findViewById(R.id.earnings_header_layout);
+        allEarningsLayout = (LinearLayout) view.findViewById(R.id.all_earnings_layout);
+        couponPoolsHeader = (LinearLayout) view.findViewById(R.id.coupon_pools_header);
+        customRefCodeHeader = (LinearLayout) view.findViewById(R.id.custom_ref_code_header);
+        friendsLayout = (LinearLayout) view.findViewById(R.id.user_friends_layout);
+        friendsHeader = (LinearLayout) view.findViewById(R.id.friends_header);
+        friendsInnerLayout = (LinearLayout) view.findViewById(R.id.friends_inner_layout);
+        friendsTable = (TableLayout) view.findViewById(R.id.friends_table);
+        couponPoolsLayout = (LinearLayout) view.findViewById(R.id.coupon_pools_layout);
+        userCouponsLayout = (LinearLayout) view.findViewById(R.id.user_coupons_layout);
+        userCouponsHeader = (LinearLayout) view.findViewById(R.id.user_coupons_header);
+        userCouponsInnerLayout = (LinearLayout) view.findViewById(R.id.user_coupons_inner_layout);
+        userCouponsTable = (TableLayout) view.findViewById(R.id.user_coupons_table);
+        couponPools = (LinearLayout) view.findViewById(R.id.coupon_pools);
+        customRefCodeInnerLayout = (LinearLayout) view.findViewById(R.id.custom_ref_code_inner_layout);
+        editRefCode = (EditText) view.findViewById(R.id.edit_ref_code);
+        btnSaveRefCode = (Button) view.findViewById(R.id.btn_save_ref_code);
+        progressBarRefCode = (ProgressBar) view.findViewById(R.id.progress_bar_ref_code);
+        prevNextBtnLayout = (LinearLayout) view.findViewById(R.id.prev_next_btn_layout);
+        tvPrev = (TextView) view.findViewById(R.id.tv_prev_friends);
+        tvNext = (TextView) view.findViewById(R.id.tv_next_friends);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
+        setBackground(earningsHeader, grdTwoRounded);
+        setBackground(couponPoolsHeader, grdFourRounded);
+        setBackground(customRefCodeHeader, grdFourRounded);
+        setBackground(friendsHeader, grdFourRounded);
+        setBackground(userCouponsHeader, grdFourRounded);
+        if (isEarnings)
+            view.findViewById(R.id.custom_ref_code_layout).setVisibility(View.GONE);
+        if (!utils.hasUserWillChoose(campaignDetails))
+            couponPoolsLayout.setVisibility(View.GONE);
+        if (womCampaignDetail != null)
+            editRefCode.setText(womCampaignDetail.referralCode);
+        getUserRewardDetails();
+        couponPoolsHeader.setOnClickListener(couponPoolsClickListener);
+        customRefCodeHeader.setOnClickListener(customRefCodeClickListener);
+        friendsHeader.setOnClickListener(friendsClickListener);
+        userCouponsHeader.setOnClickListener(userCouponsClickListener);
+        editRefCode.addTextChangedListener(refCodeTextWatcher);
+        btnSaveRefCode.setOnClickListener(saveRefCodeClickListener);
+        tvPrev.setOnClickListener(prevClickListener);
+        tvNext.setOnClickListener(nextClickListener);
         fragmentView = view;
-        try {
-            trEarningsHeader = (TableRow) view.findViewById(R.id.tr_earnings_header);
-            allEarningsLayout = (LinearLayout) view.findViewById(R.id.all_earnings_layout);
-            customUrlLayout = (LinearLayout) view.findViewById(R.id.custom_url_layout);
-            edUserParms = (EditText) view.findViewById(R.id.appvirality_custom_param);
-            btnSaveLink = (Button) view.findViewById(R.id.appvirality_savelink);
-//            tvRefCodeFixed = (TextView) view.findViewById(R.id.tv_ref_code_fixed);
-            linkLayout = (LinearLayout) view.findViewById(R.id.appvirality_custom_link_layout);
-            referrersDetails = (LinearLayout) view.findViewById(R.id.appvirality_settings_friends);
-            link = (LinearLayout) view.findViewById(R.id.appvirality_custom_link_top);
-            progress = (ProgressBar) view.findViewById(R.id.appvirality_progressbar);
-            ddCustomLink = (ImageView) view.findViewById(R.id.appvirality_dropdown1);
-            ddReferredUsers = (ImageView) view.findViewById(R.id.appvirality_dropdown2);
-            tblFriends = (TableLayout) view.findViewById(R.id.appvirality_tblrewarded);
-            tblUserRewards = (TableLayout) view.findViewById(R.id.appvirality_user_earnings);
-            couponLayout = (LinearLayout) view.findViewById(R.id.appvirality_coupons_layout);
-            couponPoolLayout = (LinearLayout) view.findViewById(R.id.coupon_pools_header);
-            tblCouponPool = (LinearLayout) view.findViewById(R.id.coupon_pools_tbl);
-            tblCoupons = (TableLayout) view.findViewById(R.id.appvirality_tblcoupons);
-            ddCoupon = (ImageView) view.findViewById(R.id.appvirality_dropdown_coupon);
-            ddCouponPool = (ImageView) view.findViewById(R.id.coupon_pools_dropdown);
-            progressBarFriends = (ProgressBar) view.findViewById(R.id.appvirality_progressbar_friends);
-            progressBarCoupons = (ProgressBar) view.findViewById(R.id.appvirality_progressbar_cpn);
-            progressBarCouponPool = (ProgressBar) view.findViewById(R.id.coupon_pool_progressbar);
-            progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-            friendsNetFailLayout = (LinearLayout) view.findViewById(R.id.user_friends_network_message);
-            userCouponsNetFailLayout = (LinearLayout) view.findViewById(R.id.user_coupons_network_message);
-            couponPoolNetFailLayout = (LinearLayout) view.findViewById(R.id.coupon_pool_network_message);
-            earningsRetry = (LinearLayout) view.findViewById(R.id.appvirality_userearnings_network_message);
-            friendsLoading = (LinearLayout) view.findViewById(R.id.appvirality_progress_friends_layout);
-            couponsLoading = (LinearLayout) view.findViewById(R.id.appvirality_progress_coupon_layout);
-            couponPoolLoading = (LinearLayout) view.findViewById(R.id.coupon_pool_progress_layout);
-            this.inflater = inflater;
-            utils = new Utils(getActivity());
-            womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
-            if (isEarnings)
-                customUrlLayout.setVisibility(View.GONE);
-
-            btnSaveLink.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    btnSaveLink.setEnabled(false);
-                    progress.setVisibility(View.VISIBLE);
-                    appVirality.customizeReferralCode(edUserParms.getText().toString().trim(), new AppVirality.CustomizeRefCodeListener() {
-                        @Override
-                        public void onCustomRefCodeSet(boolean isSet, String errorMsg) {
-                            try {
-                                if (isSet) {
-                                    ((GrowthHackActivity) getActivity()).refCodeModified = true;
-                                    Toast.makeText(getActivity(), "Referral Code changed", Toast.LENGTH_SHORT).show();
-                                    for (CampaignDetail campaignDetail : campaignDetails) {
-                                        campaignDetail.referralCode = edUserParms.getText().toString().trim();
-                                        String subShortCode = campaignDetail.shortCode.substring(campaignDetail.shortCode.lastIndexOf("-") + 1);
-                                        campaignDetail.shortCode = campaignDetail.referralCode + "-" + subShortCode;
-                                        String shareBaseUrl = campaignDetail.shareUrl.substring(0, campaignDetail.shareUrl.lastIndexOf("/") + 1);
-                                        campaignDetail.shareUrl = shareBaseUrl + campaignDetail.shortCode;
-                                    }
-
-//                                    womCampaignDetail.referralCode = edUserParms.getText().toString().trim();
-//                                    String subShortCode = womCampaignDetail.shortCode.substring(womCampaignDetail.shortCode.lastIndexOf("-") + 1);
-//                                    womCampaignDetail.shortCode = womCampaignDetail.referralCode + "-" + subShortCode;
-//                                    String shareBaseUrl = womCampaignDetail.shareUrl.substring(0, womCampaignDetail.shareUrl.lastIndexOf("/") + 1);
-//                                    womCampaignDetail.shareUrl = shareBaseUrl + womCampaignDetail.shortCode;
-//                                    campaignDetails = utils.updateCampaignDetails(campaignDetails, womCampaignDetail);
-                                    ((GrowthHackActivity) getActivity()).campaignDetails = campaignDetails;
-                                } else
-                                    Toast.makeText(getActivity(), "Problem in saving custom link, try again later.", Toast.LENGTH_SHORT).show();
-                                progress.setVisibility(View.INVISIBLE);
-                                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(edUserParms.getWindowToken(), 0);
-                            } catch (Exception e) {
-                            }
-                        }
-                    });
-                }
-            });
-
-            edUserParms.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    String newStr = edUserParms.getText().toString().trim();
-                    if (newStr.length() > 0 && !newStr.equalsIgnoreCase(womCampaignDetail.referralCode.split("-")[0])) {
-                        btnSaveLink.setEnabled(true);
-                    } else {
-                        btnSaveLink.setEnabled(false);
-                    }
-                }
-            });
-
-            grdEarnings = new GradientDrawable();
-            grdEarnings.setColor(earningsBarColor);
-            grdEarnings.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
-            setBackground(trEarningsHeader, grdEarnings);
-
-            if (utils.hasUserWillChoose(campaignDetails)) {
-                grdCouponPool = new GradientDrawable();
-                grdCouponPool.setColor(earningsBarColor);
-                grdCouponPool.setCornerRadius(10);
-                setBackground(couponPoolLayout, grdCouponPool);
-                view.findViewById(R.id.coupon_pools_header).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        collapseTabs(5);
-                        if (!couponPoolVisible) {
-                            grdCouponPool.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
-                            ddCouponPool.setSelected(true);
-                            getCouponPools();
-                            setBackground(couponPoolLayout, grdCouponPool);
-                        } else {
-                            collapseTabs(0);
-                        }
-                    }
-                });
-            } else {
-                view.findViewById(R.id.coupon_pool_layout).setVisibility(View.GONE);
-            }
-
-            grdLinkBG = new GradientDrawable();
-            grdLinkBG.setColor(earningsBarColor);
-            grdLinkBG.setCornerRadius(10);
-            setBackground(link, grdLinkBG);
-            link.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    collapseTabs(1);
-                    if (linkLayout.getVisibility() == View.GONE) {
-                        grdLinkBG.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
-                        ddCustomLink.setSelected(true);
-                        linkLayout.setVisibility(View.VISIBLE);
-                        setBackground(v, grdLinkBG);
-                    } else {
-                        collapseTabs(0);
-                    }
-                }
-            });
-
-            grdFriends = new GradientDrawable();
-            grdFriends.setColor(earningsBarColor);
-            grdFriends.setCornerRadius(10);
-            setBackground(referrersDetails, grdFriends);
-            referrersDetails.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    collapseTabs(2);
-                    if (!friendsVisible) {
-                        grdFriends.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
-                        ddReferredUsers.setSelected(true);
-                        getUserFriends();
-                        setBackground(couponLayout, grdCoupons);
-                    } else {
-                        collapseTabs(0);
-                    }
-                }
-            });
-
-            ddCoupon.setBackgroundResource(R.drawable.down);
-            grdCoupons = new GradientDrawable();
-            grdCoupons.setColor(earningsBarColor);
-            grdCoupons.setCornerRadius(10);
-            setBackground(couponLayout, grdCoupons);
-            couponLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    collapseTabs(4);
-                    if (!couponsVisible) {
-                        grdCoupons.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
-                        ddCoupon.setSelected(true);
-                        getCoupons();
-                        setBackground(couponLayout, grdCoupons);
-                    } else {
-                        collapseTabs(0);
-                    }
-                }
-            });
-
-            if (womCampaignDetail != null) {
-//                String[] refCode = womCampaignDetail.referralCode.split("-");
-//                for (int i = 0; i < refCode.length; i++) {
-//                    if (i == 0)
-//                        edUserParms.setText(refCode[0]);
-//                    else
-//                        tvRefCodeFixed.setText("-" + refCode[1]);
-//                }
-                edUserParms.setText(womCampaignDetail.referralCode);
-            }
-
-//            if (!womCampaignDetail.isRewardExists) {
-//                tblUserRewards.setVisibility(View.GONE);
-//                grdLinkBG.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
-//                ddCustomLink.setBackgroundResource(R.drawable.av_ui_up);
-//                linkLayout.setVisibility(View.VISIBLE);
-//                saveLink.setVisibility(View.VISIBLE);
-//            }
-
-            tblFriends.setVisibility(View.GONE);
-            view.findViewById(R.id.appvirality_progress).setVisibility(View.VISIBLE);
-
-            view.findViewById(R.id.appvirality_earnings_reload).setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    getUserRewardDetails();
-                }
-            });
-
-            view.findViewById(R.id.user_coupons_reload).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getCoupons();
-                }
-            });
-
-            view.findViewById(R.id.coupon_pool_reload).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getCouponPools();
-                }
-            });
-
-            view.findViewById(R.id.user_friends_reload).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getUserFriends();
-                }
-            });
-
-            getUserRewardDetails();
-
-            try {
-                if (android.os.Build.VERSION.SDK_INT >= 11) {
-                    Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
-                    f.setAccessible(true);
-                    f.set(edUserParms, R.drawable.cursor_color);
-                }
-            } catch (Exception e) {
-            }
-        } catch (Exception e) {
-            getActivity().finish();
-        }
         return view;
     }
 
-    public void getCouponPools() {
-        couponPoolLoading.setVisibility(View.VISIBLE);
-        progressBarCouponPool.setVisibility(View.VISIBLE);
-        couponPoolVisible = true;
-        fragmentView.findViewById(R.id.coupon_pool_no_coupons).setVisibility(View.GONE);
-        couponPoolNetFailLayout.setVisibility(View.GONE);
-        appVirality.getCouponPools(null, new AppVirality.CouponPoolsListener() {
-            @Override
-            public void onGetCouponPools(JSONObject responseData, String errorMsg) {
-//                if (progressBarCouponPool.getVisibility() == View.VISIBLE) {
-                if (responseData != null) {
-                    JSONArray campaignsArray = null;
-                    JSONArray couponPool = new JSONArray();
-                    try {
-                        String status = responseData.getString("success");
-                        if (status != null && Boolean.parseBoolean(status)) {
-                            campaignsArray = responseData.getJSONArray("campaigns");
-                            for (int i = 0; i < campaignsArray.length(); i++) {
-                                JSONArray receivedPoolsArray = campaignsArray.getJSONObject(i).getJSONArray("pools");
-                                for (int j = 0; j < receivedPoolsArray.length(); j++) {
-                                    couponPool.put(receivedPoolsArray.getJSONObject(j));
-                                }
-                            }
-                        }
-                        if (couponPool != null && couponPool.length() > 0) {
-                            tblCouponPool.removeAllViewsInLayout();
-                            setCouponPool(campaignsArray);
-                            couponPoolLoading.setVisibility(View.GONE);
-                        } else {
-                            fragmentView.findViewById(R.id.coupon_pool_no_coupons).setVisibility(View.VISIBLE);
-                        }
-                    } catch (Exception e) {
-
-                    }
-                } else {
-                    couponPoolNetFailLayout.setVisibility(View.VISIBLE);
-                    couponPoolLoading.setVisibility(View.GONE);
-                }
-                progressBarCouponPool.setVisibility(View.GONE);
-//                }
-            }
-        });
-    }
-
-    public void setCouponPool(JSONArray campaignArray) {
-        try {
-            ViewGroup.LayoutParams rowParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            for (int i = 0; i < campaignArray.length(); i++) {
-                JSONObject campaign = campaignArray.getJSONObject(i);
-                String ghType = campaign.getString("growthhack");
-                JSONArray couponPoolArray = campaign.getJSONArray("pools");
-                int userPendingReward = userPendingRewards.containsKey(ghType) ? userPendingRewards.get(ghType) : 0;
-                for (int j = 0; j < couponPoolArray.length(); j++) {
-                    JSONObject coupon = couponPoolArray.getJSONObject(j);
-                    View view = inflater.inflate(R.layout.coupon_pools_item, null, false);
-                    RoundedImageView companyLogo = (RoundedImageView) view.findViewById(R.id.company_logo);
-                    TextView couponTitle = (TextView) view.findViewById(R.id.coupon_title);
-                    TextView couponDesc = (TextView) view.findViewById(R.id.coupon_desc);
-                    TextView couponAmount = (TextView) view.findViewById(R.id.coupon_amount);
-                    TextView btnClaim = (TextView) view.findViewById(R.id.btn_claim_coupon);
-
-                    if (i == campaignArray.length() - 1 && j == couponPoolArray.length() - 1)
-                        view.findViewById(R.id.divider).setVisibility(View.GONE);
-
-                    if (userPendingReward < Integer.parseInt(coupon.getString("value")))
-                        btnClaim.setEnabled(false);
-
-                    utils.downloadAndSetImage(coupon.getString("image"), companyLogo);
-                    couponTitle.setText(coupon.getString("name"));
-                    couponDesc.setText(coupon.getString("details"));
-                    couponAmount.setText(Html.fromHtml("Required Credits : " + "<font color=#00BFFF>" + coupon.getString("value") + "</font>"));
-                    btnClaim.setTag(coupon.getString("poolId"));
-                    btnClaim.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String poolId = (String) v.getTag();
-                            redeemFromPool(poolId);
-                        }
-                    });
-                    tblCouponPool.addView(view, rowParams);
-                }
-            }
-            tblCouponPool.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-        }
-    }
-
-    public void redeemFromPool(String poolId) {
-        progressBar.setVisibility(View.VISIBLE);
-        appVirality.redeemFromPool(poolId, new AppVirality.CouponRedeemListener() {
-            @Override
-            public void onResponse(boolean isRedeemed, String errorMsg) {
-                try {
-                    progressBar.setVisibility(View.GONE);
-                    String toastMsg = isRedeemed ? "Coupon claimed successfully" : "Failed to claim coupon";
-                    Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_SHORT).show();
-                    if (isRedeemed) {
-                        getUserRewardDetails();
-                        getCouponPools();
-                    }
-                } catch (Exception e) {
-                }
-            }
-        });
-    }
-
     private void getUserRewardDetails() {
-        earningsRetry.setVisibility(View.GONE);
-        fragmentView.findViewById(R.id.appvirality_progress).setVisibility(View.VISIBLE);
+        userEarningsLayout.removeView(userEarningsLayout.findViewById(R.string.progress_layout_id));
+        userEarningsLayout.removeView(userEarningsLayout.findViewById(R.string.network_error_layout_id));
+        userEarningsLayout.addView(getProgressView());
         appVirality.getUserRewardDetail(null, new AppVirality.UserBalanceListener() {
             @Override
             public void onGetRewardDetails(JSONObject responseData, String errorMsg) {
@@ -485,17 +193,15 @@ public class EarningsFragment extends Fragment {
                                     allEarningsLayout.addView(earningsLayout, params);
                                 }
                             } else {
-                                allEarningsLayout.addView(utils.getNoInfoTextView("You don't have any earnings yet.", margin));
+                                allEarningsLayout.addView(getNoDataTextView(getString(R.string.no_earnings_label)));
                             }
                         } else {
-                            allEarningsLayout.addView(utils.getNoInfoTextView("You don't have any earnings yet.", margin));
+                            allEarningsLayout.addView(getNoDataTextView(getString(R.string.no_earnings_label)));
                         }
-                        fragmentView.findViewById(R.id.appvirality_progress).setVisibility(View.GONE);
-                        tblUserRewards.setVisibility(View.VISIBLE);
                     } else {
-                        earningsRetry.setVisibility(View.VISIBLE);
-                        fragmentView.findViewById(R.id.appvirality_progress).setVisibility(View.GONE);
+                        userEarningsLayout.addView(getNetworkErrorView(TabName.Earnings));
                     }
+                    userEarningsLayout.removeView(userEarningsLayout.findViewById(R.string.progress_layout_id));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -503,30 +209,142 @@ public class EarningsFragment extends Fragment {
         });
     }
 
-    private void getUserFriends() {
-        friendsLoading.setVisibility(View.VISIBLE);
-        progressBarFriends.setVisibility(View.VISIBLE);
-        friendsVisible = true;
-        fragmentView.findViewById(R.id.appvirality_no_friends).setVisibility(View.GONE);
-        friendsNetFailLayout.setVisibility(View.GONE);
-        appVirality.getFriends(new AppVirality.GetFriendsListener() {
+    public void getCouponPools() {
+        couponPools.removeView(couponPools.findViewById(R.string.progress_layout_id));
+        couponPools.removeView(couponPools.findViewById(R.string.no_data_text_view_id));
+        couponPools.removeView(couponPools.findViewById(R.string.network_error_layout_id));
+        couponPools.removeAllViews();
+        couponPools.addView(getProgressView());
+        appVirality.getCouponPools(null, new AppVirality.CouponPoolsListener() {
+            @Override
+            public void onGetCouponPools(JSONObject responseData, String errorMsg) {
+                if (responseData != null) {
+                    JSONArray campaignsArray = null;
+                    JSONArray couponPool = new JSONArray();
+                    try {
+                        String status = responseData.getString("success");
+                        if (status != null && Boolean.parseBoolean(status)) {
+                            campaignsArray = responseData.getJSONArray("campaigns");
+                            for (int i = 0; i < campaignsArray.length(); i++) {
+                                JSONArray receivedPoolsArray = campaignsArray.getJSONObject(i).getJSONArray("pools");
+                                for (int j = 0; j < receivedPoolsArray.length(); j++) {
+                                    couponPool.put(receivedPoolsArray.getJSONObject(j));
+                                }
+                            }
+                        }
+                        if (couponPool != null && couponPool.length() > 0) {
+                            setCouponPools(campaignsArray);
+                        } else {
+                            allEarningsLayout.addView(getNoDataTextView(getString(R.string.no_coupon_pool)));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    couponPools.addView(getNetworkErrorView(TabName.CouponPools));
+                }
+                couponPools.removeView(couponPools.findViewById(R.string.progress_layout_id));
+            }
+        });
+    }
+
+    public void setCouponPools(JSONArray campaignArray) {
+        try {
+            ViewGroup.LayoutParams rowParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            for (int i = 0; i < campaignArray.length(); i++) {
+                JSONObject campaign = campaignArray.getJSONObject(i);
+                String ghType = campaign.getString("growthhack");
+                JSONArray couponPoolArray = campaign.getJSONArray("pools");
+                int userPendingReward = userPendingRewards.containsKey(ghType) ? userPendingRewards.get(ghType) : 0;
+                for (int j = 0; j < couponPoolArray.length(); j++) {
+                    JSONObject coupon = couponPoolArray.getJSONObject(j);
+                    View view = inflater.inflate(R.layout.coupon_pools_item, null, false);
+                    RoundedImageView companyLogo = (RoundedImageView) view.findViewById(R.id.company_logo);
+                    TextView couponTitle = (TextView) view.findViewById(R.id.coupon_title);
+                    TextView couponDesc = (TextView) view.findViewById(R.id.coupon_desc);
+                    TextView couponAmount = (TextView) view.findViewById(R.id.coupon_amount);
+                    TextView btnClaim = (TextView) view.findViewById(R.id.btn_claim_coupon);
+
+                    if (i == campaignArray.length() - 1 && j == couponPoolArray.length() - 1)
+                        view.findViewById(R.id.divider).setVisibility(View.GONE);
+
+                    if (userPendingReward < Integer.parseInt(coupon.getString("value")))
+                        btnClaim.setEnabled(false);
+
+                    utils.downloadAndSetImage(coupon.getString("image"), companyLogo);
+                    couponTitle.setText(coupon.getString("name"));
+                    couponDesc.setText(coupon.getString("details"));
+                    couponAmount.setText(Html.fromHtml("Required Credits : " + "<font color=#00BFFF>" + coupon.getString("value") + "</font>"));
+                    btnClaim.setTag(coupon.getString("poolId"));
+                    btnClaim.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            String poolId = (String) v.getTag();
+                            redeemFromPool(poolId);
+                        }
+                    });
+                    couponPools.addView(view, rowParams);
+                }
+            }
+            couponPools.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+        }
+    }
+
+    public void redeemFromPool(String poolId) {
+        progressBar.setVisibility(View.VISIBLE);
+        appVirality.redeemFromPool(poolId, new AppVirality.CouponRedeemListener() {
+            @Override
+            public void onResponse(boolean isRedeemed, String errorMsg) {
+                try {
+                    progressBar.setVisibility(View.GONE);
+                    String toastMsg = isRedeemed ? "Coupon claimed successfully" : "Failed to claim coupon";
+                    Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_SHORT).show();
+                    if (isRedeemed) {
+                        getUserRewardDetails();
+                        getCouponPools();
+                    }
+                } catch (Exception e) {
+                }
+            }
+        });
+    }
+
+    private void getUserFriends(final int tempPageIndex) {
+        friendsInnerLayout.removeView(friendsInnerLayout.findViewById(R.string.progress_layout_id));
+        friendsInnerLayout.removeView(friendsInnerLayout.findViewById(R.string.no_data_text_view_id));
+        friendsInnerLayout.removeView(friendsInnerLayout.findViewById(R.string.network_error_layout_id));
+        friendsTable.removeAllViews();
+        friendsInnerLayout.addView(getProgressView());
+        appVirality.getFriends(tempPageIndex, pageSize, new AppVirality.GetFriendsListener() {
             @Override
             public void onGetFriends(JSONObject responseData, String errorMsg) {
                 try {
                     if (responseData != null) {
                         JSONArray friendsArray = responseData.getJSONArray("friends");
                         if (friendsArray.length() > 0) {
-                            tblFriends.removeAllViewsInLayout();
+                            int totalFriendsCount = responseData.optInt("totalFriends");
+                            pageIndex = tempPageIndex;
+                            if (pageIndex > 1) {
+                                tvPrev.setEnabled(true);
+                            } else {
+                                tvPrev.setEnabled(false);
+                            }
+                            if (pageIndex * pageSize < totalFriendsCount) {
+                                prevNextBtnLayout.setVisibility(View.VISIBLE);
+                                tvNext.setEnabled(true);
+                            } else {
+                                tvNext.setEnabled(false);
+                            }
                             setUserFriends(friendsArray);
-                            friendsLoading.setVisibility(View.GONE);
                         } else {
-                            fragmentView.findViewById(R.id.appvirality_no_friends).setVisibility(View.VISIBLE);
+                            friendsInnerLayout.addView(getNoDataTextView(getString(R.string.no_friends_label)));
                         }
                     } else {
-                        friendsNetFailLayout.setVisibility(View.VISIBLE);
-                        friendsLoading.setVisibility(View.GONE);
+                        prevNextBtnLayout.setVisibility(View.GONE);
+                        friendsInnerLayout.addView(getNetworkErrorView(TabName.Friends));
                     }
-                    progressBarFriends.setVisibility(View.GONE);
+                    friendsInnerLayout.removeView(friendsInnerLayout.findViewById(R.string.progress_layout_id));
                 } catch (Exception e) {
                 }
             }
@@ -539,7 +357,7 @@ public class EarningsFragment extends Fragment {
             int imageWidth = userImage.getWidth();
             int imageHeight = userImage.getHeight();
             userImage = Bitmap.createScaledBitmap(userImage, (int) (imageWidth * 0.6), (int) (imageHeight * 0.6), true);
-            tblFriends.removeAllViews();
+//            friendsTable.removeAllViews();
             for (int i = 0; i < friendsArray.length(); i++) {
                 JSONObject referredUserData = friendsArray.getJSONObject(i);
                 TableRow tblRow = new TableRow(getActivity());
@@ -565,48 +383,41 @@ public class EarningsFragment extends Fragment {
                 tblRow.addView(profile);
                 tblRow.addView(txtUserName, rowParams);
                 tblRow.addView(txtRegisterDate, rowParams);
-                tblFriends.addView(tblRow);
+                friendsTable.addView(tblRow);
                 View lineSeparator = new View(getActivity());
                 lineSeparator.setBackgroundColor(Color.parseColor("#bababa"));
                 lineSeparator.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-                tblFriends.addView(lineSeparator);
+                friendsTable.addView(lineSeparator);
             }
-            tblFriends.setVisibility(View.VISIBLE);
         } catch (Exception e) {
         }
     }
 
-    private void getCoupons() {
-        couponsLoading.setVisibility(View.VISIBLE);
-        progressBarCoupons.setVisibility(View.VISIBLE);
-        userCouponsNetFailLayout.setVisibility(View.GONE);
-        couponsVisible = true;
-        fragmentView.findViewById(R.id.appvirality_nocoupons).setVisibility(View.GONE);
+    private void getUserCoupons() {
+        userCouponsInnerLayout.removeView(userCouponsInnerLayout.findViewById(R.string.progress_layout_id));
+        userCouponsInnerLayout.removeView(userCouponsInnerLayout.findViewById(R.string.no_data_text_view_id));
+        userCouponsInnerLayout.removeView(userCouponsInnerLayout.findViewById(R.string.network_error_layout_id));
+        userCouponsTable.removeAllViews();
+        userCouponsInnerLayout.addView(getProgressView());
         appVirality.getUserCoupons(new AppVirality.UserCouponsListener() {
             @Override
             public void onGetCoupons(boolean isSuccess, JSONArray userCoupons, String errorMsg) {
-                if (progressBarCoupons.getVisibility() == View.VISIBLE) {
-                    if (isSuccess) {
-                        if (userCoupons != null && userCoupons.length() > 0) {
-                            setUserCoupons(userCoupons);
-                            couponsLoading.setVisibility(View.GONE);
-                        } else {
-                            fragmentView.findViewById(R.id.appvirality_nocoupons).setVisibility(View.VISIBLE);
-                            couponsLoading.setVisibility(View.VISIBLE);
-                        }
+                if (isSuccess) {
+                    if (userCoupons != null && userCoupons.length() > 0) {
+                        setUserCoupons(userCoupons);
                     } else {
-                        userCouponsNetFailLayout.setVisibility(View.VISIBLE);
-                        couponsLoading.setVisibility(View.GONE);
+                        userCouponsInnerLayout.addView(getNoDataTextView(getString(R.string.no_coupons_label)));
                     }
-                    progressBarCoupons.setVisibility(View.GONE);
+                } else {
+                    userCouponsInnerLayout.addView(getNetworkErrorView(TabName.UserCoupons));
                 }
+                userCouponsInnerLayout.removeView(userCouponsInnerLayout.findViewById(R.string.progress_layout_id));
             }
         });
     }
 
     private void setUserCoupons(JSONArray userCoupons) {
         try {
-            tblCoupons.removeAllViewsInLayout();
             int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 5, getResources().getDisplayMetrics());
             int padding10 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
 
@@ -631,7 +442,7 @@ public class EarningsFragment extends Fragment {
             tblRowHeader.addView(tvCouponExpiryHeader);
             tblRowHeader.setBackgroundColor(Color.parseColor("#A6A6A4"));
 
-            tblCoupons.addView(tblRowHeader);
+            userCouponsTable.addView(tblRowHeader);
 
             for (int i = 0; i < userCoupons.length(); i++) {
                 TableRow tblRow = new TableRow(getActivity());
@@ -678,60 +489,203 @@ public class EarningsFragment extends Fragment {
                     tblRow.setBackgroundColor(Color.parseColor("#ffffff"));
                 else
                     tblRow.setBackgroundColor(Color.parseColor("#E6E6E5"));
-                tblCoupons.addView(tblRow);
+                userCouponsTable.addView(tblRow);
             }
-            tblCoupons.setVisibility(View.VISIBLE);
         } catch (Exception e) {
         }
     }
 
-    private void setBackground(View v, GradientDrawable grdrawable) {
+    private View getProgressView() {
+        View view = inflater.inflate(R.layout.progress_layout, null, false);
+        view.setId(R.string.progress_layout_id);
+        return view;
+    }
+
+    private View getNetworkErrorView(TabName tabName) {
+        View view = inflater.inflate(R.layout.network_error_layout, null);
+        view.setId(R.string.network_error_layout_id);
+        Button btnReload = (Button) view.findViewById(R.id.appvirality_earnings_reload);
+        btnReload.setId(R.string.network_error_reload_btn_id);
+        isReload = true;
+        switch (tabName) {
+            case Earnings:
+                btnReload.setOnClickListener(earningsClickListener);
+                break;
+            case CouponPools:
+                btnReload.setOnClickListener(couponPoolsClickListener);
+                break;
+            case Friends:
+                btnReload.setOnClickListener(friendsClickListener);
+                break;
+            case UserCoupons:
+                btnReload.setOnClickListener(userCouponsClickListener);
+                break;
+            default:
+                isReload = false;
+                break;
+        }
+        return view;
+    }
+
+    private View getNoDataTextView(String noDataMsg) {
+        TextView textView = new TextView(getActivity());
+        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, metrics);
+        textView.setPadding(margin, margin, margin, margin);
+        textView.setId(R.string.no_data_text_view_id);
+        textView.setText(noDataMsg);
+        textView.setGravity(Gravity.CENTER);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        textView.setLayoutParams(params);
+        return textView;
+    }
+
+    View.OnClickListener earningsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            getUserRewardDetails();
+        }
+    };
+
+    View.OnClickListener couponPoolsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (couponPools.getVisibility() != View.VISIBLE || (isReload && v.getId() == R.string.network_error_reload_btn_id)) {
+                setSelectedTab(couponPoolsHeader, couponPools, (ImageView) couponPoolsHeader.findViewById(R.id.coupon_pools_dropdown));
+                getCouponPools();
+            } else {
+                closePrevTab();
+            }
+        }
+    };
+
+    View.OnClickListener customRefCodeClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (customRefCodeInnerLayout.getVisibility() != View.VISIBLE) {
+                setSelectedTab(customRefCodeHeader, customRefCodeInnerLayout, (ImageView) customRefCodeHeader.findViewById(R.id.custom_ref_code_dropdown));
+            } else {
+                closePrevTab();
+            }
+        }
+    };
+
+    View.OnClickListener friendsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (friendsInnerLayout.getVisibility() != View.VISIBLE || (isReload && v.getId() == R.string.network_error_reload_btn_id)) {
+                setSelectedTab(friendsHeader, friendsInnerLayout, (ImageView) friendsHeader.findViewById(R.id.friends_dropdown));
+                pageIndex = 1;
+                prevNextBtnLayout.setVisibility(View.GONE);
+                getUserFriends(pageIndex);
+            } else {
+                closePrevTab();
+            }
+        }
+    };
+
+    View.OnClickListener userCouponsClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (userCouponsInnerLayout.getVisibility() != View.VISIBLE || (isReload && v.getId() == R.string.network_error_reload_btn_id)) {
+                setSelectedTab(userCouponsHeader, userCouponsInnerLayout, (ImageView) userCouponsHeader.findViewById(R.id.user_coupons_dropdown));
+                getUserCoupons();
+            } else {
+                closePrevTab();
+            }
+        }
+    };
+
+    View.OnClickListener saveRefCodeClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            btnSaveRefCode.setEnabled(false);
+            progressBarRefCode.setVisibility(View.VISIBLE);
+            final String enteredRefCode = editRefCode.getText().toString().trim();
+            appVirality.customizeReferralCode(enteredRefCode, new AppVirality.CustomizeRefCodeListener() {
+                @Override
+                public void onCustomRefCodeSet(boolean isSuccess, String errorMsg) {
+                    try {
+                        if (isSuccess) {
+                            ((GrowthHackActivity) getActivity()).refCodeModified = true;
+                            Toast.makeText(getActivity(), "Referral Code changed", Toast.LENGTH_SHORT).show();
+                            for (CampaignDetail campaignDetail : campaignDetails) {
+                                campaignDetail.referralCode = enteredRefCode;
+                                String subShortCode = campaignDetail.shortCode.substring(campaignDetail.shortCode.lastIndexOf("-") + 1);
+                                campaignDetail.shortCode = campaignDetail.referralCode + "-" + subShortCode;
+                                String shareBaseUrl = campaignDetail.shareUrl.substring(0, campaignDetail.shareUrl.lastIndexOf("/") + 1);
+                                campaignDetail.shareUrl = shareBaseUrl + campaignDetail.shortCode;
+                            }
+                            ((GrowthHackActivity) getActivity()).campaignDetails = campaignDetails;
+                        } else {
+                            Toast.makeText(getActivity(), "Referral Code not changed.", Toast.LENGTH_SHORT).show();
+                        }
+                        progressBarRefCode.setVisibility(View.INVISIBLE);
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(editRefCode.getWindowToken(), 0);
+                    } catch (Exception e) {
+                    }
+                }
+            });
+        }
+    };
+
+    View.OnClickListener prevClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            getUserFriends(pageIndex - 1);
+        }
+    };
+
+    View.OnClickListener nextClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            getUserFriends(pageIndex + 1);
+        }
+    };
+
+    TextWatcher refCodeTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String newStr = editRefCode.getText().toString().trim();
+            btnSaveRefCode.setEnabled(newStr.length() > 0 && !newStr.equalsIgnoreCase(womCampaignDetail.referralCode.split("-")[0]));
+        }
+    };
+
+    private void setSelectedTab(View selectedHeader, View selectedLayout, ImageView selectedDropDown) {
+        closePrevTab();
+        activeHeader = selectedHeader;
+        activeLayout = selectedLayout;
+        activeDropDown = selectedDropDown;
+        setBackground(activeHeader, grdTwoRounded);
+        activeLayout.setVisibility(View.VISIBLE);
+        activeDropDown.setSelected(true);
+    }
+
+    private void closePrevTab() {
+        if (activeLayout != null && activeDropDown != null) {
+            setBackground(activeHeader, grdFourRounded);
+            activeLayout.setVisibility(View.GONE);
+            activeDropDown.setSelected(false);
+            isReload = false;
+        }
+    }
+
+    private void setBackground(View v, GradientDrawable drawable) {
         if (android.os.Build.VERSION.SDK_INT >= 16) {
-            v.setBackground(grdrawable);
+            v.setBackground(drawable);
         } else {
-            v.setBackgroundDrawable(grdrawable);
+            v.setBackgroundDrawable(drawable);
         }
     }
 
-    private void collapseTabs(int tabId) {
-        if (tabId != 1) {
-            grdLinkBG.setCornerRadius(10);
-            ddCustomLink.setSelected(false);
-            linkLayout.setVisibility(View.GONE);
-            setBackground(link, grdLinkBG);
-        }
-
-        if (tabId != 2) {
-            grdFriends.setCornerRadius(10);
-            progressBarFriends.setVisibility(View.GONE);
-            friendsVisible = false;
-            ddReferredUsers.setSelected(false);
-            friendsNetFailLayout.setVisibility(View.GONE);
-            friendsLoading.setVisibility(View.GONE);
-            tblFriends.setVisibility(View.GONE);
-            setBackground(referrersDetails, grdFriends);
-        }
-
-        if (tabId != 4) {
-            grdCoupons.setCornerRadius(10);
-            progressBarCoupons.setVisibility(View.GONE);
-            couponsVisible = false;
-            ddCoupon.setSelected(false);
-            userCouponsNetFailLayout.setVisibility(View.GONE);
-            couponsLoading.setVisibility(View.GONE);
-            tblCoupons.setVisibility(View.GONE);
-            setBackground(couponLayout, grdCoupons);
-        }
-
-        if (tabId != 5 && utils.hasUserWillChoose(campaignDetails)) {
-            grdCouponPool.setCornerRadius(10);
-            progressBarCouponPool.setVisibility(View.GONE);
-            couponPoolVisible = false;
-            ddCouponPool.setSelected(false);
-            couponPoolNetFailLayout.setVisibility(View.GONE);
-            couponPoolLoading.setVisibility(View.GONE);
-            tblCouponPool.setVisibility(View.GONE);
-            setBackground(couponPoolLayout, grdCouponPool);
-        }
-    }
 }

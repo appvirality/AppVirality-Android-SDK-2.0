@@ -29,13 +29,14 @@
     <string name="share_url_label">shareUrl/</string>
     <string name="your_friends_label">Your Friends</string>
     <string name="my_coupons_label">My Coupons</string>
+    <string name="no_earnings_label">Oops, You don’t have any earnings yet!</string>
+    <string name="no_coupon_pool">Oops, No coupons are available!</string>
     <string name="no_coupons_label">Oops, You don’t have any coupons yet!</string>
     <string name="no_friends_label">Oops, You don’t have any friends yet!</string>
 
     <string name="appvirality_no_network_message">Sorry.! Network unavailable, please check your internet connection and try again</string>
     <string name="appvirality_btn_reload">Reload</string>
     <string name="select_from_coupon_pool">Select a coupon</string>
-    <string name="no_coupon_pool">Oops, No coupons are available!</string>
 
     <string name="appvirality_launch_remind_later">Remind Later</string>
     <string name="appvirality_launch_refer">Refer</string>
@@ -43,4 +44,9 @@
 
     <string name="gh_toolbar_title">REFER &amp; EARN</string>
     <string name="gh_toolbar_terms">T&amp;C</string>
+
+    <string name="progress_layout_id">Progress Layout Id</string>
+    <string name="network_error_layout_id">Network Error Layout Id</string>
+    <string name="network_error_reload_btn_id">Network Error Reload Button Id</string>
+    <string name="no_data_text_view_id">No Data Text View Id</string>
 </resources>
