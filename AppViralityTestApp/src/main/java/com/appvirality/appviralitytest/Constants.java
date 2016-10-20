@@ -5,11 +5,7 @@ package com.appvirality.appviralitytest;
  */
 public class Constants {
 
-    static int[] productImages = {R.drawable.jeans_1, R.drawable.jeans_2, R.drawable.jeans_3, R.drawable.jeans_4,
-            R.drawable.tshrt_1, R.drawable.tshrt_2, R.drawable.tshrt_3, R.drawable.tshrt_4,
-            R.drawable.shrt_1, R.drawable.shrt_2, R.drawable.shrt_3, R.drawable.shrt_4,
-            R.drawable.shoes_1, R.drawable.shoes_2, R.drawable.shoes_3, R.drawable.shoes_4,
-            R.drawable.sandals_1, R.drawable.sandals_2, R.drawable.sandals_3, R.drawable.sandals_4};
+    static int[] productImages = {};
     static String[] productTitles = {"Jeans1", "Jeans2", "Jeans3", "Jeans4",
             "TShirt1", "TShirt2", "TShirt3", "TShirt4",
             "Shirt1", "Shirt2", "Shirt3", "Shirt4",
