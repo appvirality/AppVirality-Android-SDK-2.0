@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_invite_friends:
                 utils.showGrowthHack(appVirality);
                 break;
-            case R.id.btn_product_sharing:
-                startActivity(new Intent(MainActivity.this, ProductListingActivity.class));
-                break;
+            
             case R.id.btn_popup:
                 showCustomPopUp();
                 break;

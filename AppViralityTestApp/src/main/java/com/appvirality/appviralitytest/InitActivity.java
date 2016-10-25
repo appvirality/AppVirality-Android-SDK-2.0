@@ -115,18 +115,8 @@ public class InitActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i("AppVirality: ", "Init Status " + isInitialized);
                     if (responseData != null)
                         Log.i("AppVirality: ", "userDetails " + responseData.toString());
-                    String productSharingReferrer = appVirality.getProductSharingReferrer();
-                    if (productSharingReferrer == null) {
-                        startActivity(new Intent(InitActivity.this, MainActivity.class));
-                        finish();
-                    } else {
-                        Intent intent = new Intent(InitActivity.this, ProductDetailActivity.class);
-                        intent.setAction(Intent.ACTION_VIEW);
-                        String deepLink = getString(R.string.product_sharing_scheme) + "://" + getString(R.string.product_sharing_host) + "?referrer=" + productSharingReferrer;
-                        intent.setData(Uri.parse(deepLink));
-                        startActivity(intent);
-                        finish();
-                    }
+                    startActivity(new Intent(InitActivity.this, MainActivity.class));
+                    finish();
                 }
             });
         }
