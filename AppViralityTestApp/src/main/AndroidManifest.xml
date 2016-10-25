@@ -38,23 +38,6 @@
         <activity
             android:name="com.appvirality.appviralityui.activities.GrowthHackActivity"
             android:theme="@style/AVTheme" />
-        <activity
-            android:name=".ProductDetailActivity"
-            android:label="Product Detail">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/product_sharing_host"
-                    android:scheme="@string/product_sharing_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ProductListingActivity"
-            android:label="Products" />
         <activity android:name="com.appvirality.appviralityui.activities.WebViewActivity" />
         <activity
             android:name=".RegistrationActivity"
