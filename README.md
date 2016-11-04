@@ -13,7 +13,7 @@ Version History
 
 Current Version : 2.0.3
 
-[Version Info](https://github.com/farazAV/AppVirality-Android-SDK-2.0/wiki/Android-SDK-Version-History)
+[Version Info](https://github.com/appvirality/appvirality-sdk-android/wiki/Android-SDK-Version-History)
 
 Integrating Appvirality into your App
 -------------------------------------
