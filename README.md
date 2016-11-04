@@ -26,14 +26,14 @@ Throughout the document, invitation sender will be called as "Referrer" and rece
 Use Gradle dependency for core SDK + Default UI
 
 ```java
-    compile 'com.appvirality:AppViralityUI:2.0.1'
+    compile 'com.appvirality:AppViralityUI:2.0.3'
 ```
 
 OR
 
 Use Gradle dependency for core SDK
 ```java
-    compile 'com.appvirality:AppViralitySDK:2.0.1'
+    compile 'com.appvirality:AppViralitySDK:2.0.3'
 ```
 
 OR
@@ -435,8 +435,12 @@ appVirality.updateAppUserInfo(userDetails, new AppVirality.UpdateUserInfoListene
 ```
 
 <H4>Displaying Welcome screen</H4>
-[Displaying Welcome screen to new users](https://github.com/farazAV/AppVirality-Android-SDK-2.0/wiki/Displaying-Welcome-screen-to-new-users)
+[Displaying Welcome screen to new users](http://dev.appvirality.com/docs/appvirality-docs/advanced-configurations/display-welcome-screen)
 
 <H4>Whats Next</H4>
 
 Sit back and watch AppVirality in action by creating the campaigns from <a href="http://growth.appvirality.com">AppVirality Dashboard.</a>
+
+For more information visit our help documentation at [dev.appvirality.com](http://dev.appvirality.com/docs/appvirality-docs/android-sdk-integration/)
+
+Happy Programming..!
