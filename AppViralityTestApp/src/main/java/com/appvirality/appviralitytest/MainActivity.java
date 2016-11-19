@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onReferrerDetailsReady(JSONObject referrerDetails) {
                 if (referrerDetails != null && appVirality.isReferredUser() && !appVirality.isExistingUser()) {
-                    if (!referrerDetails.optString("friend_reward_event").equalsIgnoreCase("Install")) {
+                    if (!referrerDetails.optString("friendRewardEvent").equalsIgnoreCase("Install")) {
                         appVirality.saveConversionEvent("Install", null, null, null, Constants.GrowthHackType.Word_of_Mouth, new AppVirality.ConversionEventListener() {
                             @Override
                             public void onResponse(boolean isSuccess, String message, String errorMsg) {

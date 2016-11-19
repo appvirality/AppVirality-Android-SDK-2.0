@@ -16,6 +16,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -85,73 +86,80 @@ public class EarningsFragment extends Fragment {
     }
 
     public EarningsFragment() {
-        appVirality = AppVirality.getInstance(getActivity());
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        this.inflater = inflater;
-        utils = new Utils(getActivity());
-        metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int[] attrs = {R.attr.av_earnings_bar_color};
-        TypedArray typedValue = getActivity().obtainStyledAttributes(attrs);
-        earningsBarColor = typedValue.getColor(0, Color.BLACK);
-        grdTwoRounded = new GradientDrawable();
-        grdFourRounded = new GradientDrawable();
-        grdTwoRounded.setColor(earningsBarColor);
-        grdFourRounded.setColor(earningsBarColor);
-        grdTwoRounded.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
-        grdFourRounded.setCornerRadius(10);
-        campaignDetails = (ArrayList<CampaignDetail>) getArguments().getSerializable("campaign_details");
-        isEarnings = getArguments().getBoolean("is_earnings", false);
         final View view = inflater.inflate(R.layout.fragment_earnings, container, false);
-        userEarningsLayout = (LinearLayout) view.findViewById(R.id.earnings_layout);
-        earningsHeader = (LinearLayout) view.findViewById(R.id.earnings_header_layout);
-        allEarningsLayout = (LinearLayout) view.findViewById(R.id.all_earnings_layout);
-        couponPoolsHeader = (LinearLayout) view.findViewById(R.id.coupon_pools_header);
-        customRefCodeHeader = (LinearLayout) view.findViewById(R.id.custom_ref_code_header);
-        friendsLayout = (LinearLayout) view.findViewById(R.id.user_friends_layout);
-        friendsHeader = (LinearLayout) view.findViewById(R.id.friends_header);
-        friendsInnerLayout = (LinearLayout) view.findViewById(R.id.friends_inner_layout);
-        friendsTable = (TableLayout) view.findViewById(R.id.friends_table);
-        couponPoolsLayout = (LinearLayout) view.findViewById(R.id.coupon_pools_layout);
-        userCouponsLayout = (LinearLayout) view.findViewById(R.id.user_coupons_layout);
-        userCouponsHeader = (LinearLayout) view.findViewById(R.id.user_coupons_header);
-        userCouponsInnerLayout = (LinearLayout) view.findViewById(R.id.user_coupons_inner_layout);
-        userCouponsTable = (TableLayout) view.findViewById(R.id.user_coupons_table);
-        couponPools = (LinearLayout) view.findViewById(R.id.coupon_pools);
-        customRefCodeInnerLayout = (LinearLayout) view.findViewById(R.id.custom_ref_code_inner_layout);
-        editRefCode = (EditText) view.findViewById(R.id.edit_ref_code);
-        btnSaveRefCode = (Button) view.findViewById(R.id.btn_save_ref_code);
-        progressBarRefCode = (ProgressBar) view.findViewById(R.id.progress_bar_ref_code);
-        prevNextBtnLayout = (LinearLayout) view.findViewById(R.id.prev_next_btn_layout);
-        tvPrev = (TextView) view.findViewById(R.id.tv_prev_friends);
-        tvNext = (TextView) view.findViewById(R.id.tv_next_friends);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
-        setBackground(earningsHeader, grdTwoRounded);
-        setBackground(couponPoolsHeader, grdFourRounded);
-        setBackground(customRefCodeHeader, grdFourRounded);
-        setBackground(friendsHeader, grdFourRounded);
-        setBackground(userCouponsHeader, grdFourRounded);
-        if (isEarnings)
-            view.findViewById(R.id.custom_ref_code_layout).setVisibility(View.GONE);
-        if (!utils.hasUserWillChoose(campaignDetails))
-            couponPoolsLayout.setVisibility(View.GONE);
-        if (womCampaignDetail != null)
-            editRefCode.setText(womCampaignDetail.referralCode);
-        getUserRewardDetails();
-        couponPoolsHeader.setOnClickListener(couponPoolsClickListener);
-        customRefCodeHeader.setOnClickListener(customRefCodeClickListener);
-        friendsHeader.setOnClickListener(friendsClickListener);
-        userCouponsHeader.setOnClickListener(userCouponsClickListener);
-        editRefCode.addTextChangedListener(refCodeTextWatcher);
-        btnSaveRefCode.setOnClickListener(saveRefCodeClickListener);
-        tvPrev.setOnClickListener(prevClickListener);
-        tvNext.setOnClickListener(nextClickListener);
-        fragmentView = view;
+        try {
+            appVirality = AppVirality.getInstance(getActivity());
+            this.inflater = inflater;
+            utils = new Utils(getActivity());
+            metrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int[] attrs = {R.attr.av_earnings_bar_color};
+            TypedArray typedValue = getActivity().obtainStyledAttributes(attrs);
+            earningsBarColor = typedValue.getColor(0, Color.BLACK);
+            grdTwoRounded = new GradientDrawable();
+            grdFourRounded = new GradientDrawable();
+            grdTwoRounded.setColor(earningsBarColor);
+            grdFourRounded.setColor(earningsBarColor);
+            grdTwoRounded.setCornerRadii(new float[]{10, 10, 10, 10, 0, 0, 0, 0});
+            grdFourRounded.setCornerRadius(10);
+            campaignDetails = (ArrayList<CampaignDetail>) getArguments().getSerializable("campaign_details");
+            isEarnings = getArguments().getBoolean("is_earnings", false);
+            userEarningsLayout = (LinearLayout) view.findViewById(R.id.earnings_layout);
+            earningsHeader = (LinearLayout) view.findViewById(R.id.earnings_header_layout);
+            allEarningsLayout = (LinearLayout) view.findViewById(R.id.all_earnings_layout);
+            couponPoolsHeader = (LinearLayout) view.findViewById(R.id.coupon_pools_header);
+            customRefCodeHeader = (LinearLayout) view.findViewById(R.id.custom_ref_code_header);
+            friendsLayout = (LinearLayout) view.findViewById(R.id.user_friends_layout);
+            friendsHeader = (LinearLayout) view.findViewById(R.id.friends_header);
+            friendsInnerLayout = (LinearLayout) view.findViewById(R.id.friends_inner_layout);
+            friendsTable = (TableLayout) view.findViewById(R.id.friends_table);
+            couponPoolsLayout = (LinearLayout) view.findViewById(R.id.coupon_pools_layout);
+            userCouponsLayout = (LinearLayout) view.findViewById(R.id.user_coupons_layout);
+            userCouponsHeader = (LinearLayout) view.findViewById(R.id.user_coupons_header);
+            userCouponsInnerLayout = (LinearLayout) view.findViewById(R.id.user_coupons_inner_layout);
+            userCouponsTable = (TableLayout) view.findViewById(R.id.user_coupons_table);
+            couponPools = (LinearLayout) view.findViewById(R.id.coupon_pools);
+            customRefCodeInnerLayout = (LinearLayout) view.findViewById(R.id.custom_ref_code_inner_layout);
+            editRefCode = (EditText) view.findViewById(R.id.edit_ref_code);
+            btnSaveRefCode = (Button) view.findViewById(R.id.btn_save_ref_code);
+            progressBarRefCode = (ProgressBar) view.findViewById(R.id.progress_bar_ref_code);
+            prevNextBtnLayout = (LinearLayout) view.findViewById(R.id.prev_next_btn_layout);
+            tvPrev = (TextView) view.findViewById(R.id.tv_prev_friends);
+            tvNext = (TextView) view.findViewById(R.id.tv_next_friends);
+            progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+            womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
+            setBackground(earningsHeader, grdTwoRounded);
+            setBackground(couponPoolsHeader, grdFourRounded);
+            setBackground(customRefCodeHeader, grdFourRounded);
+            setBackground(friendsHeader, grdFourRounded);
+            setBackground(userCouponsHeader, grdFourRounded);
+            if (isEarnings)
+                view.findViewById(R.id.custom_ref_code_layout).setVisibility(View.GONE);
+            if (!utils.hasUserWillChoose(campaignDetails))
+                couponPoolsLayout.setVisibility(View.GONE);
+            if (womCampaignDetail != null)
+                editRefCode.setText(womCampaignDetail.referralCode);
+            getUserRewardDetails();
+            couponPoolsHeader.setOnClickListener(couponPoolsClickListener);
+            customRefCodeHeader.setOnClickListener(customRefCodeClickListener);
+            friendsHeader.setOnClickListener(friendsClickListener);
+            userCouponsHeader.setOnClickListener(userCouponsClickListener);
+            editRefCode.addTextChangedListener(refCodeTextWatcher);
+            btnSaveRefCode.setOnClickListener(saveRefCodeClickListener);
+            tvPrev.setOnClickListener(prevClickListener);
+            tvNext.setOnClickListener(nextClickListener);
+            fragmentView = view;
+        }
+        catch (Exception ex)
+        {
+            Log.i("AppVirality UI", ex.getMessage());
+        }
+
         return view;
     }
 

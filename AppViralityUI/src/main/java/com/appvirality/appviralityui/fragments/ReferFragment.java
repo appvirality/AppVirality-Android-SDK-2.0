@@ -56,17 +56,19 @@ public class ReferFragment extends Fragment {
     Utils utils;
 
     public ReferFragment() {
-        appVirality = AppVirality.getInstance(getActivity());
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        utils = new Utils(getActivity());
-        campaignDetails = (ArrayList<CampaignDetail>) getArguments().getSerializable("campaign_details");
-        womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
         View view = inflater.inflate(R.layout.fragment_refer, container, false);
+
         try {
+            appVirality = AppVirality.getInstance(getActivity());
+            utils = new Utils(getActivity());
+            campaignDetails = (ArrayList<CampaignDetail>) getArguments().getSerializable("campaign_details");
+            womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
+
             if (womCampaignDetail != null) {
                 ivCampaignBg = (ImageView) view.findViewById(R.id.iv_campaign_bg);
                 upperLayout = (RelativeLayout) view.findViewById(R.id.upper_layout);

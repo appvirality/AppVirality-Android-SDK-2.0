@@ -19,12 +19,12 @@ public class UpdateUserDetailsActivity extends AppCompatActivity implements View
     EditText editName, editEmail, editAppUserId, editMobile, editCity, editState, editCountry;
     CheckBox cbExistingUser;
     Utils utils;
-    AppVirality appVirality = AppVirality.getInstance(this);
-
+    AppVirality appVirality;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_user_details);
+        appVirality = AppVirality.getInstance(this);
 
         utils = new Utils(this);
         editName = (EditText) findViewById(R.id.edit_name);

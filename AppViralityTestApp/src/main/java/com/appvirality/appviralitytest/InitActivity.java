@@ -72,7 +72,7 @@ public class InitActivity extends AppCompatActivity implements View.OnClickListe
     public void checkAttribution() {
         if (appVirality != null) {
             utils.showProgressDialog();
-            appVirality.checkAttribution(new AppVirality.CheckAttributionListener() {
+            appVirality.checkAttribution(editReferralCode.getText().toString() ,new AppVirality.CheckAttributionListener() {
                 @Override
                 public void onResponse(JSONObject responseData, String errorMsg) {
                     utils.dismissProgressDialog();
@@ -89,6 +89,7 @@ public class InitActivity extends AppCompatActivity implements View.OnClickListe
                         }
                         Toast.makeText(InitActivity.this, toastMsg, Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             });
@@ -115,8 +116,18 @@ public class InitActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i("AppVirality: ", "Init Status " + isInitialized);
                     if (responseData != null)
                         Log.i("AppVirality: ", "userDetails " + responseData.toString());
-                    startActivity(new Intent(InitActivity.this, MainActivity.class));
-                    finish();
+                    String productSharingReferrer = appVirality.getProductSharingReferrer();
+                    if (productSharingReferrer == null) {
+                        startActivity(new Intent(InitActivity.this, MainActivity.class));
+                        finish();
+                    } else {
+                        Intent intent = new Intent(InitActivity.this, ProductDetailActivity.class);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        String deepLink = getString(R.string.product_sharing_scheme) + "://" + getString(R.string.product_sharing_host) + "?referrer=" + productSharingReferrer;
+                        intent.setData(Uri.parse(deepLink));
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             });
         }

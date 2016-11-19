@@ -63,38 +63,38 @@ public class WelcomeScreenActivity extends Activity {
                 editTextRefCode.setText(refCode.toUpperCase());
             }
 
-            txtReferrerDesc.setText(referrerDetails.optString("welcome_message"));
-            if (!TextUtils.isEmpty(referrerDetails.optString("offer_title_color")))
-                txtReferrerDesc.setTextColor(Color.parseColor(referrerDetails.optString("offer_title_color")));
-            if (!TextUtils.isEmpty(referrerDetails.optString("referrer_image_url"))) {
-                utils.downloadAndSetImage(referrerDetails.optString("referrer_image_url"), imgProfile);
+            txtReferrerDesc.setText(referrerDetails.optString("welcomeMessage"));
+            if (!TextUtils.isEmpty(referrerDetails.optString("offerTitleColor")))
+                txtReferrerDesc.setTextColor(Color.parseColor(referrerDetails.optString("offerTitleColor")));
+            if (!TextUtils.isEmpty(referrerDetails.optString("profileImage"))) {
+                utils.downloadAndSetImage(referrerDetails.optString("profileImage"), imgProfile);
             }
-            friendRewardEvent = referrerDetails.optString("friend_reward_event");
+            friendRewardEvent = referrerDetails.optString("friendRewardEvent");
             if (!friendRewardEvent.equalsIgnoreCase("Install")) {
                 btnClaim.setVisibility(View.GONE);
                 userEmail.setVisibility(View.GONE);
                 editTextRefCode.setVisibility(View.GONE);
                 txtSkipReferrer.setText("Close");
             }
-            if (referrerDetails.optString("friend_reward_event").equalsIgnoreCase("Signup")) {
+            if (friendRewardEvent.equalsIgnoreCase("Signup")) {
                 btnSignUp.setVisibility(View.VISIBLE);
                 editTextRefCode.setVisibility(View.GONE);
             }
             //hide referral code input filed if attribution setting is only Link
-            if ((!TextUtils.isEmpty(referrerDetails.optString("attribution_setting")) && referrerDetails.optString("attribution_setting").equals("0")) || referrerDetails.getBoolean("attribution_confirmed"))
+            if ((!TextUtils.isEmpty(referrerDetails.optString("attributionSetting")) && referrerDetails.optString("attributionSetting").equals("0")) || referrerDetails.getBoolean("isReferrerConfirmed"))
                 editTextRefCode.setVisibility(View.GONE);
 
-            if (!TextUtils.isEmpty(referrerDetails.optString("user_email")))
+            if (!TextUtils.isEmpty(referrerDetails.optString("userEmail")))
                 userEmail.setVisibility(View.GONE);
             else
-                userEmail.setText(referrerDetails.optString("user_email"));
-            if (!TextUtils.isEmpty(referrerDetails.optString("campaign_bg_color")))
-                findViewById(R.id.layout_welcome_screen).setBackgroundColor(Color.parseColor(referrerDetails.optString("campaign_bg_color")));
+                userEmail.setText(referrerDetails.optString("userEmail"));
+            if (!TextUtils.isEmpty(referrerDetails.optString("campaignBGColor")))
+                findViewById(R.id.layout_welcome_screen).setBackgroundColor(Color.parseColor(referrerDetails.optString("campaignBGColor")));
             btnClaim.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-                        if (!TextUtils.isEmpty(referrerDetails.optString("user_email")) ? true : Patterns.EMAIL_ADDRESS.matcher(userEmail.getText().toString().trim()).matches()) {
+                        if (!TextUtils.isEmpty(referrerDetails.optString("userEmail")) ? true : Patterns.EMAIL_ADDRESS.matcher(userEmail.getText().toString().trim()).matches()) {
                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                             setFriendRewardListener(userEmail.getText().toString().trim());
@@ -157,8 +157,8 @@ public class WelcomeScreenActivity extends Activity {
         progressDialog.show();
 
         String refCode = editTextRefCode.getText().toString();
-        if (!TextUtils.isEmpty(refCode) && !TextUtils.isEmpty(referrerDetails.optString("attribution_setting"))
-                && !referrerDetails.optString("attribution_setting").equals("0") && !referrerDetails.getBoolean("attribution_confirmed")) {
+        if (!TextUtils.isEmpty(refCode) && !TextUtils.isEmpty(referrerDetails.optString("attributionSetting"))
+                && !referrerDetails.optString("attributionSetting").equals("0") && !referrerDetails.getBoolean("isReferrerConfirmed")) {
             appVirality.submitReferralCode(refCode, new AppVirality.SubmitReferralCodeListener() {
                 @Override
                 public void onResponse(boolean isSuccess, String errorMsg) {
