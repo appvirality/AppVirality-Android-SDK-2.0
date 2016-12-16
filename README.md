@@ -1,5 +1,5 @@
 # AppVirality-Android-SDK-2.0
-Referrals &amp; Loyalty Program
+Referrals &amp; Loyalty Program 
 
 <H3>Introduction:</H3>
 AppVirality is a Plug and Play Growth Hacking Toolkit for Mobile Apps.  
