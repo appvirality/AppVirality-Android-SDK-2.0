@@ -116,11 +116,8 @@ public class InitActivity extends AppCompatActivity implements View.OnClickListe
                     Log.i("AppVirality: ", "Init Status " + isInitialized);
                     if (responseData != null)
                         Log.i("AppVirality: ", "userDetails " + responseData.toString());
-                    String productSharingReferrer = appVirality.getProductSharingReferrer();
-                    if (productSharingReferrer == null) {
                         startActivity(new Intent(InitActivity.this, MainActivity.class));
                         finish();
-                    }
                 }
             });
         }
