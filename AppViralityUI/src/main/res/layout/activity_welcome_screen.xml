@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_welcome_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -55,6 +56,17 @@
                 android:textColor="#ffffff"
                 android:textSize="18sp" />
 
+            <EditText
+                android:id="@+id/editTextReferralCode"
+                android:layout_width="230dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/welcome_email_bg"
+                android:hint="@string/appvirality_welcome_referral_code"
+                android:paddingLeft="10dp"
+                android:visibility="gone"/>
+
             <Button
                 android:id="@+id/appvirality_btnsignup"
                 android:layout_width="wrap_content"
@@ -68,38 +80,6 @@
                 android:textColor="#ffffff"
                 android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/editTextReferralCode"
-                android:layout_width="230dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/welcome_email_bg"
-                android:hint="@string/appvirality_welcome_referral_code"
-                android:paddingLeft="10dp" />
-
-            <EditText
-                android:id="@+id/appvirality_edittext_email"
-                android:layout_width="230dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/welcome_email_bg"
-                android:hint="@string/appvirality_welcome_email"
-                android:inputType="textEmailAddress"
-                android:paddingLeft="10dp" />
-
-            <Button
-                android:id="@+id/appvirality_btnclaim"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/btn_welcome_claim"
-                android:paddingLeft="26dp"
-                android:paddingRight="26dp"
-                android:text="@string/appvirality_welcome_claim"
-                android:textColor="#ffffff" />
         </LinearLayout>
 
         <TextView

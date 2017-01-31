@@ -29,6 +29,13 @@
                 android:hint="App User Id" />
 
             <EditText
+                android:id="@+id/edit_push_token"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:hint="Push Token" />
+
+            <EditText
                 android:id="@+id/edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -76,25 +83,40 @@
                 android:layout_height="wrap_content"
                 android:text="ExistingUser" />
 
-            <Button
-                android:id="@+id/btn_check_attribution"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="50dp"
-                android:onClick="onClick"
-                android:text="Check Attribution"
-                android:typeface="serif" />
-
-            <Button
-                android:id="@+id/btn_init"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:onClick="onClick"
-                android:text="Initialize SDK"
-                android:typeface="serif" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_login"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:text="Login"
+                    android:typeface="serif" />
+
+                <Button
+                    android:id="@+id/btn_sign_up"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:text="SignUp"
+                    android:typeface="serif" />
+
+                <Button
+                    android:id="@+id/btn_skip"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    android:text="Skip"
+                    android:typeface="serif" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

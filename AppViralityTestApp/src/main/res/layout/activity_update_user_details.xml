@@ -40,6 +40,13 @@
                 android:hint="Enter Name" />
 
             <EditText
+                android:id="@+id/edit_image_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:hint="User Image Url" />
+
+            <EditText
                 android:id="@+id/edit_app_user_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

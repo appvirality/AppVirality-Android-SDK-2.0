@@ -156,7 +156,7 @@ public class GcmRegistrationIntentService extends IntentService {
 
     private void sendPushTokenToServer() {
         UserDetails userDetails = new UserDetails();
-        userDetails.setPushRegId(token);
+        userDetails.setPushToken(token);
         if(appVirality != null)
         appVirality.updateAppUserInfo(userDetails, null);
     }

@@ -9,18 +9,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.appvirality.Items;
+import com.appvirality.SocialItem;
 import com.appvirality.appviralityui.R;
 
 import java.util.ArrayList;
 
-public class GridViewAdapter extends ArrayAdapter<Items> {
+public class GridViewAdapter extends ArrayAdapter<SocialItem> {
     private Context context;
     private int layoutResourceId;
-    private ArrayList<Items> socialActions = new ArrayList<>();
+    private ArrayList<SocialItem> socialActions = new ArrayList<>();
 
     public GridViewAdapter(Context context, int layoutResourceId,
-                           ArrayList<Items> socialActions) {
+                           ArrayList<SocialItem> socialActions) {
         super(context, layoutResourceId, socialActions);
         this.layoutResourceId = layoutResourceId;
         this.context = context;
@@ -42,7 +42,7 @@ public class GridViewAdapter extends ArrayAdapter<Items> {
             holder = (ViewHolder) row.getTag();
         }
 
-        Items item = socialActions.get(position);
+        SocialItem item = socialActions.get(position);
         holder.title.setText(item.appname);
 //		if(item.getTitleColor() != -1)
 //			holder.title.setTextColor(item.getTitleColor());

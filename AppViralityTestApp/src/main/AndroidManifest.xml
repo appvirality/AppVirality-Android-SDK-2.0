@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
 
     <permission
         android:name="com.appvirality.appviralitytest.permission.C2D_MESSAGE"
@@ -37,17 +38,18 @@
             android:label="AppVirality Test" />
         <activity
             android:name="com.appvirality.appviralityui.activities.GrowthHackActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AVTheme" />
         <activity android:name="com.appvirality.appviralityui.activities.WebViewActivity" />
         <activity
-            android:name=".RegistrationActivity"
-            android:label="Register" />
+            android:name=".ApplyRefCodeActivity"
+            android:label="Apply Referral Code" />
         <activity
             android:name="com.appvirality.appviralityui.activities.WelcomeScreenActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".InitActivity"
+            android:name=".LoginActivity"
             android:label="Initialize SDK"
             android:windowSoftInputMode="stateHidden" />
         <activity

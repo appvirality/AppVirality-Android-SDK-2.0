@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -19,12 +18,8 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Surface;
-import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.appvirality.AppVirality;
 import com.appvirality.CampaignDetail;
@@ -36,7 +31,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -46,11 +43,13 @@ public class Utils {
 
     Context context;
     ProgressDialog progressDialog;
+    AppVirality appVirality;
     public static final String TAG = "AppViralityTestApp";
     public static final String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.androidlav";
 
     public Utils(Context context) {
         this.context = context;
+        appVirality = AppVirality.getInstance(context);
     }
 
     public static boolean hasInternet(Context context) {
@@ -80,25 +79,43 @@ public class Utils {
     }
 
     public void downloadAndSaveImage(String imageUrl, String imageName) {
-        if (!TextUtils.isEmpty(imageUrl) && !TextUtils.isEmpty(imageName)) {
+        boolean hasImage = !TextUtils.isEmpty(imageUrl) && !TextUtils.isEmpty(imageName);
+        if (hasImage) {
             new ImgDownloadTask(null).execute(new String[]{imageUrl, imageName});
+        } else {
+            deleteImage(imageName);
         }
     }
 
     private Bitmap downloadImage(String imageUrl) {
         int number = 0;
+        int redirectCount = 0;
         boolean succeeded = false;
         Bitmap bitmapImage = null;
+        HttpURLConnection connection = null;
         while (hasInternet(context) && number < 3 && !succeeded) {
             try {
-                InputStream in = new java.net.URL(imageUrl).openStream();
-                bitmapImage = BitmapFactory.decodeStream(in);
-                in.close();
+                URL url = new URL(imageUrl);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.setInstanceFollowRedirects(false);
+                connection.connect();
+                final int responseCode = connection.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_OK && redirectCount <= 3) {
+                    String newUrl = connection.getHeaderField("Location");
+                    redirectCount++;
+                    return downloadImage(newUrl);
+                }
+                InputStream input = connection.getInputStream();
+                bitmapImage = BitmapFactory.decodeStream(input);
                 succeeded = true;
             } catch (SocketTimeoutException e) {
                 Log.d(TAG, "" + e.getMessage());
             } catch (Exception e) {
                 Log.d(TAG, "" + e.getMessage());
+            } finally {
+                if (connection != null)
+                    connection.disconnect();
             }
             number++;
         }
@@ -130,6 +147,18 @@ public class Utils {
         }
     }
 
+    public void deleteImage(String campaignImageName) {
+        try {
+            File dir = new File(directory);
+            if (!dir.exists())
+                return;
+            File imgFile = new File(dir, campaignImageName);
+            imgFile.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public Bitmap readImageFromExtStorage(String imageName) {
         Bitmap bitmap = null;
         try {
@@ -137,8 +166,6 @@ public class Utils {
             if (f.exists()) {
                 Log.d("Image", "Exists");
                 bitmap = BitmapFactory.decodeStream(new FileInputStream(f));
-            } else {
-                Log.d("Image", "Does Not Exists");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -259,42 +286,30 @@ public class Utils {
         return false;
     }
 
-//    public ArrayList<CampaignDetail> updateCampaignDetails(ArrayList<CampaignDetail> campaignDetails, CampaignDetail campaignDetail) {
-//        for (int i = 0; i < campaignDetails.size(); i++) {
-//            CampaignDetail detail = campaignDetails.get(i);
-//            if (detail.growthHackType == campaignDetail.growthHackType) {
-//                campaignDetails.remove(i);
-//                campaignDetails.add(i, campaignDetail);
-//                break;
-//            }
-//        }
-//        return campaignDetails;
-//    }
-
-    public TextView getNoInfoTextView(String message, int margin) {
-        TextView tvNoData = new TextView(context);
-        tvNoData.setText(message);
-        tvNoData.setTextColor(Color.BLACK);
-        tvNoData.setPadding(margin, margin, margin, margin);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        tvNoData.setLayoutParams(params);
-        return tvNoData;
-    }
-
     public void refreshImages(CampaignDetail campaignDetail) {
         if (campaignDetail != null) {
             downloadAndSaveImage(campaignDetail.campaignImgUrl, campaignDetail.campaignId + "-" + campaignDetail.campaignImgUrl.substring(campaignDetail.campaignImgUrl.lastIndexOf("/") + 1));
-//            downloadAndSaveImage(campaignDetail.campaignBgImgUrl, campaignDetail.campaignId + "-" + campaignDetail.campaignBgImgUrl);
             for (SocialAction socialAction : campaignDetail.campaignSocialActions) {
-                if (socialAction.socialActionName.equalsIgnoreCase("instagram")) {
-                    downloadAndSaveImage(socialAction.shareImageUrl, campaignDetail.campaignId + "-" + "instagram");
-                } else if (socialAction.socialActionName.equalsIgnoreCase("pinterest")) {
-                    downloadAndSaveImage(socialAction.shareImageUrl, campaignDetail.campaignId + "-" + "pinterest");
-                } else if (socialAction.socialActionName.equalsIgnoreCase("twitter")) {
-                    downloadAndSaveImage(socialAction.shareImageUrl, campaignDetail.campaignId + "-" + "twitter");
-                } else if (socialAction.socialActionName.equalsIgnoreCase("whatsapp")) {
-                    downloadAndSaveImage(socialAction.shareImageUrl, campaignDetail.campaignId + "-" + "whatsapp");
+                boolean hasImage = !TextUtils.isEmpty(socialAction.shareImageUrl);
+                String imageName = campaignDetail.campaignId + "-" + socialAction.socialActionName.toLowerCase() + ".jpg";
+                String imagePath = hasImage ? directory + "/" + imageName : null;
+                switch (socialAction.socialActionName.toLowerCase()) {
+                    case "instagram":
+                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
+                        appVirality.setInstagramImagePath(imagePath);
+                        break;
+                    case "pinterest":
+                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
+                        appVirality.setPinterestImagePath(imagePath);
+                        break;
+                    case "twitter":
+                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
+                        appVirality.setTwitterImagePath(imagePath);
+                        break;
+                    case "whatsapp":
+                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
+                        appVirality.setWhatsAppImagePath(imagePath);
+                        break;
                 }
             }
         }

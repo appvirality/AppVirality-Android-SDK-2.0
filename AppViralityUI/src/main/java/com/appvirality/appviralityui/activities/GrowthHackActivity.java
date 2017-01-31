@@ -52,8 +52,10 @@ public class GrowthHackActivity extends AppCompatActivity implements View.OnClic
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbarTitle = (TextView) findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        if (isEarnings)
+        if (isEarnings) {
             toolbarTitle.setText("EARNINGS");
+            findViewById(R.id.tv_terms_conditions).setVisibility(View.GONE);
+        }
 //        else
 //            toolbarTitle.setText("REFER & EARN");
         viewPager = (ViewPager) findViewById(R.id.view_pager);

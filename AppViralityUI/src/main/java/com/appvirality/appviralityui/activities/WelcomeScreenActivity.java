@@ -1,42 +1,35 @@
 package com.appvirality.appviralityui.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appvirality.AppVirality;
-import com.appvirality.CampaignDetail;
-import com.appvirality.Constants;
-import com.appvirality.UserDetails;
 import com.appvirality.appviralityui.R;
 import com.appvirality.appviralityui.Utils;
+import com.appvirality.appviralityui.custom.RoundedImageView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 
 public class WelcomeScreenActivity extends Activity {
 
-    EditText editTextRefCode;
-    ProgressDialog progressDialog;
     JSONObject referrerDetails;
     AppVirality appVirality;
     Utils utils;
     String friendRewardEvent;
+    TextView tvReferrerDesc, tvSkipReferrer;
+    EditText editTextRefCode;
+    RoundedImageView imgProfile;
+    Button btnSignUp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,183 +39,143 @@ public class WelcomeScreenActivity extends Activity {
         String referrerDetailsStr = getIntent().getStringExtra("referrer_details");
         appVirality = AppVirality.getInstance(this);
         utils = new Utils(this);
-
         try {
-            Log.i("AppViralitySDK", "Welcome screen Started");
+            Log.i("AppViralitySDK", "Welcome Screen Started");
             referrerDetails = new JSONObject(referrerDetailsStr);
-            TextView txtReferrerDesc = (TextView) findViewById(R.id.appvirality_reward_details);
-            final EditText userEmail = (EditText) findViewById(R.id.appvirality_edittext_email);
-            Button btnClaim = (Button) findViewById(R.id.appvirality_btnclaim);
-            TextView txtSkipReferrer = (TextView) findViewById(R.id.appvirality_skip_welcome);
-            ImageView imgProfile = (ImageView) findViewById(R.id.appvirality_user_profile);
-            Button btnSignUp = (Button) findViewById(R.id.appvirality_btnsignup);
-
-            editTextRefCode = (EditText) findViewById(R.id.editTextReferralCode);
-            String refCode = appVirality.getReferrerRefCode();
-            if (!TextUtils.isEmpty(refCode)) {
-                editTextRefCode.setText(refCode.toUpperCase());
-            }
-
-            txtReferrerDesc.setText(referrerDetails.optString("welcomeMessage"));
-            if (!TextUtils.isEmpty(referrerDetails.optString("offerTitleColor")))
-                txtReferrerDesc.setTextColor(Color.parseColor(referrerDetails.optString("offerTitleColor")));
-            if (!TextUtils.isEmpty(referrerDetails.optString("profileImage"))) {
-                utils.downloadAndSetImage(referrerDetails.optString("profileImage"), imgProfile);
-            }
-            friendRewardEvent = referrerDetails.optString("friendRewardEvent");
-            if (!friendRewardEvent.equalsIgnoreCase("Install")) {
-                btnClaim.setVisibility(View.GONE);
-                userEmail.setVisibility(View.GONE);
-                editTextRefCode.setVisibility(View.GONE);
-                txtSkipReferrer.setText("Close");
-            }
-            if (friendRewardEvent.equalsIgnoreCase("Signup")) {
-                btnSignUp.setVisibility(View.VISIBLE);
-                editTextRefCode.setVisibility(View.GONE);
-            }
-            //hide referral code input filed if attribution setting is only Link
-            if ((!TextUtils.isEmpty(referrerDetails.optString("attributionSetting")) && referrerDetails.optString("attributionSetting").equals("0")) || referrerDetails.getBoolean("isReferrerConfirmed"))
-                editTextRefCode.setVisibility(View.GONE);
-
-            if (!TextUtils.isEmpty(referrerDetails.optString("userEmail")))
-                userEmail.setVisibility(View.GONE);
-            else
-                userEmail.setText(referrerDetails.optString("userEmail"));
-            if (!TextUtils.isEmpty(referrerDetails.optString("campaignBGColor")))
-                findViewById(R.id.layout_welcome_screen).setBackgroundColor(Color.parseColor(referrerDetails.optString("campaignBGColor")));
-            btnClaim.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (!TextUtils.isEmpty(referrerDetails.optString("userEmail")) ? true : Patterns.EMAIL_ADDRESS.matcher(userEmail.getText().toString().trim()).matches()) {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                            setFriendRewardListener(userEmail.getText().toString().trim());
-                        } else {
-                            Toast.makeText(WelcomeScreenActivity.this, "Please enter valid email address", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        Log.e("Welcome Screen", "Error parsing data.");
-                        finish();
-                    }
-                }
-            });
-
-            txtSkipReferrer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-
-            btnSignUp.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setResult(RESULT_OK);
-                    //Please add the following code block in your Registration page after successful registration.
-                    /*appVirality.getCampaigns(Constants.GrowthHackType.Word_of_Mouth, new AppVirality.CampaignDetailsListener() {
-                        @Override
-                        public void onGetCampaignDetails(ArrayList<CampaignDetail> campaignDetails, boolean refreshImages, String errorMsg) {
-                            if (campaignDetails.size() > 0) {
-                                CampaignDetail womCampaignDetail = campaignDetails.get(0);
-                                if (refreshImages)
-                                    utils.refreshImages(womCampaignDetail);
-                                appVirality.saveConversionEvent("signup", null, null, womCampaignDetail.campaignId, Constants.GrowthHackType.Word_of_Mouth, new AppVirality.ConversionEventListener() {
-                                    @Override
-                                    public void onResponse(boolean isSuccess, String message, String errorMsg) {
-                                        dismissProgressDialog();
-                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            } else {
-                                dismissProgressDialog();
-                            }
-                        }
-                    });*/
-
-                    finish();
-                }
-            });
-
+            setViewsData();
         } catch (Exception e) {
             finish();
         }
     }
 
-    private void setFriendRewardListener(String email) throws JSONException {
-        final String userEmail = email;
-        progressDialog = new ProgressDialog(WelcomeScreenActivity.this);
-        progressDialog.setMessage("Please wait...");
-        progressDialog.setCancelable(true);
-        progressDialog.show();
+    private void setViewsData() throws Exception {
+        tvReferrerDesc = (TextView) findViewById(R.id.appvirality_reward_details);
+        tvSkipReferrer = (TextView) findViewById(R.id.appvirality_skip_welcome);
+        imgProfile = (RoundedImageView) findViewById(R.id.appvirality_user_profile);
+        btnSignUp = (Button) findViewById(R.id.appvirality_btnsignup);
+        editTextRefCode = (EditText) findViewById(R.id.editTextReferralCode);
+        tvReferrerDesc.setText(referrerDetails.optString("welcomeMessage"));
+        if (!TextUtils.isEmpty(referrerDetails.optString("offerTitleColor")))
+            tvReferrerDesc.setTextColor(Color.parseColor(referrerDetails.optString("offerTitleColor")));
+        if (!TextUtils.isEmpty(referrerDetails.optString("profileImage"))) {
+            imgProfile.setVisibility(View.VISIBLE);
+            utils.downloadAndSetImage(referrerDetails.optString("profileImage"), imgProfile);
+        }
+        friendRewardEvent = referrerDetails.optString("friendRewardEvent");
+        String attributionSetting = referrerDetails.optString("attributionSetting");
 
-        String refCode = editTextRefCode.getText().toString();
-        if (!TextUtils.isEmpty(refCode) && !TextUtils.isEmpty(referrerDetails.optString("attributionSetting"))
-                && !referrerDetails.optString("attributionSetting").equals("0") && !referrerDetails.getBoolean("isReferrerConfirmed")) {
+        // shouldEnterRefCode will be True if Referrer Details are not available, so
+        // as to take referral code from user to get probable Referrer Details
+        final boolean shouldEnterRefCode = !attributionSetting.equals("0") && (!referrerDetails.getBoolean("hasReferrer") || appVirality.isSessionInitialized());
+
+        // Displaying Welcome Message if Referrer has been confirmed
+        if (attributionSetting.equals("0") || referrerDetails.getBoolean("isReferrerConfirmed")) {
+            if (editTextRefCode.getVisibility() == View.VISIBLE) {
+                ((TextView) findViewById(R.id.tv_welcome_title)).setText(getString(R.string.appvirality_welcome_title));
+                tvReferrerDesc.setVisibility(View.VISIBLE);
+                editTextRefCode.setEnabled(false);
+                btnSignUp.setVisibility(View.GONE);
+                imgProfile.setVisibility(View.VISIBLE);
+            }
+        } else {
+            // If Attribution Setting is Only Referral Code or (Referral Link + Referral Code)
+            // and Referrer is not confirmed
+            btnSignUp.setVisibility(View.VISIBLE);
+            if (referrerDetails.getBoolean("hasReferrer")) {
+                ((TextView) findViewById(R.id.tv_welcome_title)).setText(getString(R.string.appvirality_welcome_title));
+                tvReferrerDesc.setVisibility(View.VISIBLE);
+                // If user should enter Referral Code to get the Referrer Details
+                if (shouldEnterRefCode) {
+                    editTextRefCode.setVisibility(View.VISIBLE);
+                    editTextRefCode.setText(referrerDetails.optString("referrerCode"));
+                    btnSignUp.setText("Apply");
+                } else {
+                    imgProfile.setVisibility(View.VISIBLE);
+                    editTextRefCode.setEnabled(false);
+                    btnSignUp.setText("Sign Up");
+                }
+            } else {
+                // Doesn't have Referrer Details, user should enter the Referral Code
+                ((TextView) findViewById(R.id.tv_welcome_title)).setText(getString(R.string.appvirality_welcome_ref_code));
+                tvReferrerDesc.setVisibility(View.GONE);
+                imgProfile.setVisibility(View.GONE);
+                editTextRefCode.setVisibility(View.VISIBLE);
+                btnSignUp.setText("Apply");
+            }
+        }
+        if (!TextUtils.isEmpty(referrerDetails.optString("campaignBGColor")))
+            findViewById(R.id.layout_welcome_screen).setBackgroundColor(Color.parseColor(referrerDetails.optString("campaignBGColor")));
+
+        tvSkipReferrer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // User clicked on SignUp, return control to the calling activity
+                // and launch SignUp screen from there
+                if (!shouldEnterRefCode) {
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("referral_code", referrerDetails.optString("referrerCode"));
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                } else {
+                    // Apply entered Referral Code to get the probable Referrer Details
+                    String refCode = editTextRefCode.getText().toString().trim();
+                    if (!TextUtils.isEmpty(refCode)) {
+                        checkReferralCode(refCode);
+                    } else {
+                        editTextRefCode.setError("Required");
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Applying Referral Code entered by the user
+     */
+    private void checkReferralCode(final String refCode) {
+        utils.showProgressDialog();
+        if (appVirality.isSessionInitialized()) {
             appVirality.submitReferralCode(refCode, new AppVirality.SubmitReferralCodeListener() {
                 @Override
-                public void onResponse(boolean isSuccess, String errorMsg) {
-                    if (isSuccess) {
-                        Log.i("AppViralitySDK : ", "Referral Code applied Successfully");
-                        Toast.makeText(WelcomeScreenActivity.this, "Referral Code applied Successfully", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(WelcomeScreenActivity.this, "Failed to apply referral code", Toast.LENGTH_SHORT).show();
-                    }
-                    updateUserInfo(userEmail);
+                public void onResponse(boolean isSuccess, JSONObject responseData, String errorMsg) {
+                    Toast.makeText(getApplicationContext(), isSuccess ? "Referral Code applied Successfully" : "Failed to apply referral code", Toast.LENGTH_SHORT).show();
+                    refreshData(responseData);
+                    finish();
                 }
             });
-        } else if (friendRewardEvent.equalsIgnoreCase("Install")) {
-            updateUserInfo(userEmail);
+        } else {
+            appVirality.checkAttribution(refCode, new AppVirality.CheckAttributionListener() {
+                @Override
+                public void onResponse(JSONObject responseData, String errorMsg) {
+                    refreshData(responseData);
+                }
+            });
         }
     }
 
-    private void updateUserInfo(String email) {
-        UserDetails userDetails = new UserDetails();
-        userDetails.setUserEmail(email);
-        appVirality.updateAppUserInfo(userDetails, new AppVirality.UpdateUserInfoListener() {
-            @Override
-            public void onResponse(boolean isSuccess, String errorMsg) {
-                saveInstallConversionEvent(true);
+    private void refreshData(JSONObject responseData) {
+        try {
+            utils.dismissProgressDialog();
+            if (editTextRefCode.getText().toString().trim().equalsIgnoreCase(responseData.optString("referrerCode"))) {
+                referrerDetails = responseData;
+                setViewsData();
             }
-        });
-    }
-
-    public void saveInstallConversionEvent(final boolean shouldFinish) {
-        appVirality.getCampaigns(Constants.GrowthHackType.Word_of_Mouth, new AppVirality.CampaignDetailsListener() {
-            @Override
-            public void onGetCampaignDetails(ArrayList<CampaignDetail> campaignDetails, boolean refreshImages, String errorMsg) {
-                CampaignDetail womCampaignDetail = null;
-                if (campaignDetails.size() > 0)
-                    womCampaignDetail = campaignDetails.get(0);
-                if (refreshImages)
-                    utils.refreshImages(womCampaignDetail);
-                String campaignId = null;
-                if (womCampaignDetail != null)
-                    campaignId = womCampaignDetail.campaignId;
-                appVirality.saveConversionEvent("Install", null, null, campaignId, Constants.GrowthHackType.Word_of_Mouth, new AppVirality.ConversionEventListener() {
-                    @Override
-                    public void onResponse(boolean isSuccess, String message, String errorMsg) {
-                        dismissProgressDialog();
-                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                        if (shouldFinish)
-                            finish();
-                    }
-                });
-            }
-        });
-    }
-
-    private void dismissProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-            progressDialog = null;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        dismissProgressDialog();
+        utils.dismissProgressDialog();
     }
 
 }

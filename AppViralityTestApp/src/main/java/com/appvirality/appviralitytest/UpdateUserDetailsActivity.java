@@ -16,7 +16,7 @@ import com.appvirality.appviralityui.Utils;
  */
 public class UpdateUserDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText editName, editEmail, editAppUserId, editMobile, editCity, editState, editCountry;
+    EditText editName, editEmail, editImageUrl, editAppUserId, editMobile, editCity, editState, editCountry;
     CheckBox cbExistingUser;
     Utils utils;
     AppVirality appVirality;
@@ -29,6 +29,7 @@ public class UpdateUserDetailsActivity extends AppCompatActivity implements View
         utils = new Utils(this);
         editName = (EditText) findViewById(R.id.edit_name);
         editEmail = (EditText) findViewById(R.id.edit_email);
+        editImageUrl = (EditText) findViewById(R.id.edit_image_url);
         editAppUserId = (EditText) findViewById(R.id.edit_app_user_id);
         editMobile = (EditText) findViewById(R.id.edit_mobile);
         editCity = (EditText) findViewById(R.id.edit_city);
@@ -51,6 +52,7 @@ public class UpdateUserDetailsActivity extends AppCompatActivity implements View
         UserDetails userDetails = new UserDetails();
         userDetails.setUserName(editName.getText().toString().trim());
         userDetails.setUserEmail(editEmail.getText().toString().trim());
+        userDetails.setProfileImage(editImageUrl.getText().toString().trim());
         userDetails.setAppUserId(editAppUserId.getText().toString().trim());
         userDetails.setMobileNo(editMobile.getText().toString());
         userDetails.setCity(editCity.getText().toString());
@@ -64,10 +66,7 @@ public class UpdateUserDetailsActivity extends AppCompatActivity implements View
                     utils.dismissProgressDialog();
                     if (isSuccess) {
                         Toast.makeText(getApplicationContext(), "Updated Successfully", Toast.LENGTH_LONG).show();
-                        editName.setText("");
-                        editEmail.setText("");
-                        editAppUserId.setText("");
-                        cbExistingUser.setChecked(false);
+                        resetValues();
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to update the user details", Toast.LENGTH_LONG).show();
                     }
@@ -75,6 +74,18 @@ public class UpdateUserDetailsActivity extends AppCompatActivity implements View
                 }
             }
         });
+    }
+
+    private void resetValues(){
+        editName.setText("");
+        editEmail.setText("");
+        editImageUrl.setText("");
+        editAppUserId.setText("");
+        editMobile.setText("");
+        editCity.setText("");
+        editState.setText("");
+        editCountry.setText("");
+        cbExistingUser.setChecked(false);
     }
 
     @Override

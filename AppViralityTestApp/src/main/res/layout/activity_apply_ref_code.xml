@@ -26,12 +26,12 @@
             android:hint="Enter Referral Code, if you have" />
 
         <Button
-            android:id="@+id/btn_register"
+            android:id="@+id/btn_apply_referral_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
-            android:text="Register Now"
+            android:text="Apply"
             android:typeface="serif" />
 
     </LinearLayout>

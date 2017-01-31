@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_earnings:
                 showEarnings();
                 break;
-            case R.id.btn_register:
-                showRegisterScreen();
+            case R.id.btn_apply_referral_code:
+                startActivity(new Intent(MainActivity.this, ApplyRefCodeActivity.class));
                 break;
             case R.id.btn_update_user_details:
                 startActivity(new Intent(MainActivity.this, UpdateUserDetailsActivity.class));
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_logout:
                 appVirality.logout();
                 Toast.makeText(MainActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, InitActivity.class));
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
                 break;
         }
@@ -89,29 +89,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REG_SCREEN_REQ_CODE && resultCode == RESULT_OK) {
-            showRegisterScreen();
+            Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
+            loginIntent.putExtra("referral_code", data.getStringExtra("referral_code"));
+            startActivity(loginIntent);
         }
     }
 
     private void showWelcomeScreen() {
-        appVirality.getReferrerDetails(new AppVirality.ReferrerDetailsReadyListener() {
+        appVirality.checkAttribution(null, new AppVirality.CheckAttributionListener() {
             @Override
-            public void onReferrerDetailsReady(JSONObject referrerDetails) {
-                if (referrerDetails != null && appVirality.isReferredUser() && !appVirality.isExistingUser()) {
-                    if (!referrerDetails.optString("friendRewardEvent").equalsIgnoreCase("Install")) {
-                        appVirality.saveConversionEvent("Install", null, null, null, Constants.GrowthHackType.Word_of_Mouth, new AppVirality.ConversionEventListener() {
-                            @Override
-                            public void onResponse(boolean isSuccess, String message, String errorMsg) {
-                                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-                            }
-                        });
+            public void onResponse(JSONObject responseData, String errorMsg) {
+                if (responseData != null) {
+                    String ghType = responseData.optString("growthhack");
+                    String attributionSetting = responseData.optString("attributionSetting");
+                    if (!responseData.optBoolean("isExistingUser") && !(attributionSetting.equalsIgnoreCase("0") && !responseData.optBoolean("hasReferrer")) && (ghType.equalsIgnoreCase(Constants.GrowthHackType.Word_of_Mouth.name()) || ghType.equalsIgnoreCase(""))) {
+                        Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
+                        intent.putExtra("referrer_details", responseData.toString());
+                        startActivityForResult(intent, REG_SCREEN_REQ_CODE);
+                        // Set the user as existing user after displaying the welcome screen, to
+                        // avoid welcome screen getting displayed on subsequent launches
+                        appVirality.setExistingUser();
                     }
-                    Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
-                    intent.putExtra("referrer_details", referrerDetails.toString());
-                    startActivityForResult(intent, REG_SCREEN_REQ_CODE);
-                    // Set the user as existing user after displaying the welcome screen, to
-                    // avoid welcome screen getting displayed on subsequent launches
-                    appVirality.setExistingUser();
                 }
             }
         });
@@ -165,9 +163,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void showRegisterScreen() {
-        startActivity(new Intent(MainActivity.this, RegistrationActivity.class));
-    }
+//    private void showRegisterScreen() {
+//        startActivity(new Intent(MainActivity.this, RegistrationActivity.class));
+//    }
 
     private void showSaveEventDialog() {
         final Dialog popUp = new Dialog(MainActivity.this);
@@ -201,11 +199,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Constants.GrowthHackType growthHackType = Constants.GrowthHackType.valueOf(growthHackTypes.get(spinnerGrowthHack.getSelectedItemPosition()));
                             if (cbNoGrowthHack.isChecked())
                                 growthHackType = null;
-                            CampaignDetail campaignDetail = appVirality.getCampaignDetail(growthHackType, campaignDetails);
-                            String campaignId = null;
-                            if (campaignDetail != null)
-                                campaignId = campaignDetail.campaignId;
-                            appVirality.saveConversionEvent(customEvent, transactionAmount, null, campaignId, growthHackType, new AppVirality.ConversionEventListener() {
+                            appVirality.saveConversionEvent(customEvent, transactionAmount, null, null, growthHackType, new AppVirality.ConversionEventListener() {
                                 @Override
                                 public void onResponse(boolean isSuccess, String message, String errorMsg) {
                                     Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
