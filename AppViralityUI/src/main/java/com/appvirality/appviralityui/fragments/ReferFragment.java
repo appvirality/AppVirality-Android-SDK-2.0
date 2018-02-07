@@ -1,15 +1,17 @@
 package com.appvirality.appviralityui.fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
@@ -19,23 +21,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appvirality.AppVirality;
 import com.appvirality.CampaignDetail;
 import com.appvirality.Constants;
+import com.appvirality.SocialAction;
 import com.appvirality.SocialItem;
 import com.appvirality.appviralityui.R;
 import com.appvirality.appviralityui.Utils;
+import com.appvirality.appviralityui.activities.InviteContactsActivity;
+import com.appvirality.appviralityui.activities.WebViewActivity;
 import com.appvirality.appviralityui.adapters.GridViewAdapter;
 
 import java.util.ArrayList;
+
+import static com.appvirality.appviralityui.R.id.appvirality_share_link;
 
 /**
  * Created by AppVirality on 3/28/2016.
@@ -48,14 +55,11 @@ public class ReferFragment extends Fragment {
     LinearLayout socialItemsLayout;
     public PopupWindow popupWindow;
     DisplayMetrics metrics;
-    TextView txtShareLink, txtShareCode;
-    RelativeLayout imgTitleLayout, titleDescLayout, upperLayout;
+    TextView txtShareLink, txtShareCode, tvTnC, tvShareVia;
     ImageView ivCampaignBg;
-    int imgWidth = 1040, imgHeight = 910;
     Utils utils;
-
-    public ReferFragment() {
-    }
+    Button btnInviteContacts;
+    public static final int READ_CONTACTS_PERMISSION_CODE = 100;
 
     @Nullable
     @Override
@@ -70,43 +74,41 @@ public class ReferFragment extends Fragment {
 
             if (womCampaignDetail != null) {
                 ivCampaignBg = (ImageView) view.findViewById(R.id.iv_campaign_bg);
-                upperLayout = (RelativeLayout) view.findViewById(R.id.upper_layout);
-                imgTitleLayout = (RelativeLayout) view.findViewById(R.id.img_title_layout);
-                titleDescLayout = (RelativeLayout) view.findViewById(R.id.title_desc_layout);
-                final TextView txtOfferTitle = (TextView) view.findViewById(R.id.campaign_title);
                 final TextView txtOfferDescription = (TextView) view.findViewById(R.id.campaign_desc);
                 final TextView txtNoSocialInstalled = (TextView) view.findViewById(R.id.appvirality_no_social_installed);
                 final LinearLayout referralShareUrl = (LinearLayout) view.findViewById(R.id.appvirality_custom_share_link);
                 socialItemsLayout = (LinearLayout) view.findViewById(R.id.social_items_layout);
+                btnInviteContacts = (Button) view.findViewById(R.id.btn_invite_contacts);
 
-                txtShareLink = (TextView) view.findViewById(R.id.appvirality_share_link);
+                tvShareVia = (TextView) view.findViewById(R.id.tv_or_share_via);
+                txtShareLink = (TextView) view.findViewById(appvirality_share_link);
                 txtShareCode = (TextView) view.findViewById(R.id.appvirality_share_code);
+                tvTnC = (TextView) view.findViewById(R.id.tv_tnc);
 
                 metrics = new DisplayMetrics();
                 getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-                Bitmap campaignImg = utils.readImageFromExtStorage(womCampaignDetail.campaignId + "-" + womCampaignDetail.campaignImgUrl.substring(womCampaignDetail.campaignImgUrl.lastIndexOf("/") + 1));
-                if (campaignImg != null) {
-                    ivCampaignBg.setImageBitmap(campaignImg);
+                if (!TextUtils.isEmpty(womCampaignDetail.campaignImgUrl)) {
+                    Bitmap campaignImg = utils.readImageFromExtStorage(appVirality.getCampaignImagePath());
+                    if (campaignImg != null && !campaignImg.equals("")) {
+                        ivCampaignBg.setVisibility(View.VISIBLE);
+                        ivCampaignBg.setImageBitmap(campaignImg);
+                    } else if (womCampaignDetail.campaignImgUrl.contains("app-poster.png")) {
+                        ivCampaignBg.setVisibility(View.VISIBLE);
+                        ivCampaignBg.setImageResource(R.drawable.refer_image);
+                    }
                 }
 
-                int maxWidth = metrics.widthPixels - 4 * (int) getResources().getDimension(R.dimen.campaign_image_margin);
-                float aspectRatio = (float) imgWidth / imgHeight;
-                int newWidth = maxWidth;
-                int newHeight = (int) (newWidth / aspectRatio);
-                imgTitleLayout.getLayoutParams().width = newWidth;
-                imgTitleLayout.getLayoutParams().height = newHeight;
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) titleDescLayout.getLayoutParams();
-                int leftRightMargin = (int) getResources().getDimension(R.dimen.campaign_title_desc_left_right_margin);
-                params.setMargins(leftRightMargin, newHeight / 2, leftRightMargin, Math.abs((int) getResources().getDimension(R.dimen.av_ref_code_margin_top)));
-
-                txtOfferTitle.setText(Html.fromHtml("<b>" + womCampaignDetail.campaignTitle + "</b>"));
-                txtOfferDescription.setText(Html.fromHtml(womCampaignDetail.campaignDescription));
+                if (!TextUtils.isEmpty(womCampaignDetail.campaignDescription)) {
+                    txtOfferDescription.setText(Html.fromHtml(womCampaignDetail.campaignDescription));
+                } else {
+                    txtOfferDescription.setVisibility(View.GONE);
+                }
                 if (womCampaignDetail.noSocialActionsFound) {
                     txtNoSocialInstalled.setText(womCampaignDetail.noSocialActionsMessage);
                     txtNoSocialInstalled.setVisibility(View.VISIBLE);
                 }
-                txtShareCode.setOnClickListener(new View.OnClickListener() {
+                view.findViewById(R.id.ref_code_layout).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (android.os.Build.VERSION.SDK_INT >= 11) {
@@ -141,25 +143,59 @@ public class ReferFragment extends Fragment {
 
                 refreshLinkCode(campaignDetails);
                 if (TextUtils.isEmpty(womCampaignDetail.referralCode))
-                    txtShareCode.setVisibility(View.GONE);
+                    view.findViewById(R.id.ref_code_layout).setVisibility(View.GONE);
 
                 addUpperSocialItems(inflater);
 
-                if (!TextUtils.isEmpty(womCampaignDetail.campaignBgColor)) {
-                    upperLayout.setBackgroundColor(Color.parseColor(womCampaignDetail.campaignBgColor));
+                if (womCampaignDetail.campaignSocialActions.contains(new SocialAction("InviteContacts"))
+                        /*&& (Utils.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS))*/) {
+                    tvShareVia.setText("Or Share Via");
+                    if (!TextUtils.isEmpty(womCampaignDetail.campaignTitleColor)) {
+                        btnInviteContacts.setBackgroundColor(Color.parseColor(womCampaignDetail.campaignTitleColor));
+                    }
+                    btnInviteContacts.setVisibility(View.VISIBLE);
+                    btnInviteContacts.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Utils.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS)) {
+                                Intent intent = new Intent(getActivity(), InviteContactsActivity.class);
+                                intent.putExtra("campaign_detail", womCampaignDetail);
+                                startActivity(intent);
+                            } else {
+                                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACTS_PERMISSION_CODE);
+                            }
+                        }
+                    });
                 }
-                if (!TextUtils.isEmpty(womCampaignDetail.campaignTitleColor))
-                    txtOfferTitle.setTextColor(Color.parseColor(womCampaignDetail.campaignTitleColor));
-                if (!TextUtils.isEmpty(womCampaignDetail.campaignDescriptionColor))
-                    txtOfferDescription.setTextColor(Color.parseColor(womCampaignDetail.campaignDescriptionColor));
-                int bgDrawableId = R.drawable.bg_rect_gray;
-                Drawable bgDrawable = android.os.Build.VERSION.SDK_INT >= 21 ? getResources().getDrawable(bgDrawableId, null) : getResources().getDrawable(bgDrawableId);
-                if (android.os.Build.VERSION.SDK_INT >= 16) {
-                    referralShareUrl.setBackground(bgDrawable);
-                    txtShareCode.setBackground(bgDrawable);
-                } else {
-                    referralShareUrl.setBackgroundDrawable(bgDrawable);
-                    txtShareCode.setBackgroundDrawable(bgDrawable);
+
+                tvTnC.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            startActivity(new Intent(getActivity(), WebViewActivity.class).putExtra("campaign_id", womCampaignDetail.campaignId));
+                        } catch (Exception e) {
+                        }
+                    }
+                });
+
+                if (!TextUtils.isEmpty(womCampaignDetail.campaignBgColor)) {
+                    view.setBackgroundColor(Color.parseColor(womCampaignDetail.campaignBgColor));
+                }
+//                if (!TextUtils.isEmpty(womCampaignDetail.campaignTitleColor)) {
+//                    int titleColor = Color.parseColor(womCampaignDetail.campaignTitleColor);
+//                    tvShareVia.setTextColor(titleColor);
+//                    ((TextView) view.findViewById(R.id.tv_your_ref_link)).setTextColor(titleColor);
+//                }
+                if (!TextUtils.isEmpty(womCampaignDetail.campaignDescriptionColor)) {
+                    int descColor = Color.parseColor(womCampaignDetail.campaignDescriptionColor);
+                    //tvShareVia.setTextColor(descColor);
+                    //((TextView) view.findViewById(R.id.tv_your_code)).setTextColor(descColor);
+                    //((TextView) view.findViewById(R.id.tv_your_ref_link)).setTextColor(descColor);
+                    txtOfferDescription.setTextColor(descColor);
+                    txtNoSocialInstalled.setTextColor(descColor);
+                    txtShareLink.setTextColor(descColor);
+                    txtShareCode.setTextColor(descColor);
+                    tvTnC.setTextColor(descColor);
                 }
             } else {
                 getActivity().finish();
@@ -183,17 +219,31 @@ public class ReferFragment extends Fragment {
                     imageView.setImageResource(R.drawable.more);
                 } else {
                     textView.setText(socialItem.appname);
-                    imageView.setImageDrawable(getActivity().getPackageManager().getDrawable(socialItem.packagename, socialItem.resId, null));
+                    if (!socialItem.isCustom || !TextUtils.isEmpty(socialItem.packagename)) {
+                        imageView.setImageDrawable(getActivity().getPackageManager().getDrawable(socialItem.packagename, socialItem.resId, null));
+                    } else if (socialItem.isCustom) {
+                        if (socialItem.resId != 0)
+                            imageView.setImageResource(socialItem.resId);
+                        view.setTag(R.string.custom_impl_tag, true);
+                    }
                 }
+//                if (!TextUtils.isEmpty(womCampaignDetail.campaignDescriptionColor))
+//                    textView.setTextColor(Color.parseColor(womCampaignDetail.campaignDescriptionColor));
                 view.setTag(i);
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         int index = (int) v.getTag();
+                        Object isCustomImpl = v.getTag(R.string.custom_impl_tag);
                         if (index == 3 && womCampaignDetail.allSocialItems.size() > 4) {
                             showSocialItemsPopUp(inflater);
                         } else {
-                            appVirality.invokeInvite(womCampaignDetail.allSocialItems.get(index), womCampaignDetail.isRewardExists);
+                            if (isCustomImpl == null || !(boolean) isCustomImpl) {
+                                appVirality.invokeInvite(womCampaignDetail.allSocialItems.get(index));
+                            } else if ((boolean) isCustomImpl) {
+                                SocialItem socialItem = womCampaignDetail.allSocialItems.get(index);
+                                invokeCustomInvite(socialItem, getSocialActionForId(socialItem.socialActionId));
+                            }
                         }
                     }
                 });
@@ -213,7 +263,13 @@ public class ReferFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 popupWindow.dismiss();
-                appVirality.invokeInvite(womCampaignDetail.allSocialItems.get(position), womCampaignDetail.isRewardExists);
+                Object isCustomImpl = view.getTag(R.string.custom_impl_tag);
+                if (isCustomImpl == null || !(boolean) isCustomImpl) {
+                    appVirality.invokeInvite(womCampaignDetail.allSocialItems.get(position));
+                } else if ((boolean) isCustomImpl) {
+                    SocialItem socialItem = womCampaignDetail.allSocialItems.get(position);
+                    invokeCustomInvite(socialItem, getSocialActionForId(socialItem.socialActionId));
+                }
             }
         });
         int statusBarHeight = 0;
@@ -233,7 +289,35 @@ public class ReferFragment extends Fragment {
         womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
         if (!TextUtils.isEmpty(womCampaignDetail.shareUrl))
             txtShareLink.setText(womCampaignDetail.shareUrl + "/");
-        txtShareCode.setText(Html.fromHtml("Your Code : " + "<b><font color=black>" + womCampaignDetail.referralCode.toUpperCase() + "</font></b>"));
+        txtShareCode.setText(/*Html.fromHtml("Your Referral Code : " + "<b><font color=" + womCampaignDetail.campaignTitleColor + ">" +*/ womCampaignDetail.referralCode.toUpperCase() /*+ "</font></b>")*/);
+    }
+
+    private void invokeCustomInvite(SocialItem socialItem, SocialAction socialAction) {
+        switch (socialItem.appname) {
+            case "custom_social_action_1":
+                /**
+                 * Replace "custom_social_action_1" with your custom social action
+                 * name and write your custom social action implementation here.
+                 **/
+                break;
+        }
+        appVirality.recordSocialAction(socialItem.socialActionId, Constants.GrowthHackType.Word_of_Mouth, womCampaignDetail.shortCode, constructShareMsg(socialAction));
+    }
+
+    private SocialAction getSocialActionForId(String socialActionId) {
+        for (SocialAction socialAction : womCampaignDetail.campaignSocialActions) {
+            if (socialAction.socialActionId.equals(socialActionId))
+                return socialAction;
+        }
+        return null;
+    }
+
+    private String constructShareMsg(SocialAction socialAction) {
+        if (socialAction != null) {
+            return socialAction.shareMessage.replaceAll("SHARE_URL", " " + socialAction.shareUrl + " ").replaceAll("SHARE_CODE", " " + womCampaignDetail.referralCode + " ");
+        } else {
+            return womCampaignDetail.campaignSocialActions.get(0).shareMessage.replaceAll("SHARE_URL", " " + womCampaignDetail.shareUrl + " ").replaceAll("SHARE_CODE", " " + womCampaignDetail.referralCode + " ");
+        }
     }
 
 }

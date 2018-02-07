@@ -51,4 +51,8 @@
     <string name="network_error_layout_id">Network Error Layout Id</string>
     <string name="network_error_reload_btn_id">Network Error Reload Button Id</string>
     <string name="no_data_text_view_id">No Data Text View Id</string>
+
+    <string name="search_contacts_hint">Search Contacts</string>
+    <string name="custom_impl_tag">Custom Impl Tag</string>
+
 </resources>

@@ -57,7 +57,7 @@ public class EarningsFragment extends Fragment {
     CampaignDetail womCampaignDetail;
     boolean isEarnings;
     LinearLayout userEarningsLayout, allEarningsLayout;
-    HashMap<String, Integer> userPendingRewards = new HashMap<>();
+    HashMap<String, Integer> userApprovedRewards = new HashMap<>();
     LayoutInflater inflater;
     Utils utils;
     View fragmentView;
@@ -83,9 +83,6 @@ public class EarningsFragment extends Fragment {
         CouponPools,
         Friends,
         UserCoupons
-    }
-
-    public EarningsFragment() {
     }
 
     @Nullable
@@ -142,8 +139,11 @@ public class EarningsFragment extends Fragment {
                 view.findViewById(R.id.custom_ref_code_layout).setVisibility(View.GONE);
             if (!utils.hasUserWillChoose(campaignDetails))
                 couponPoolsLayout.setVisibility(View.GONE);
-            if (womCampaignDetail != null)
+            if (womCampaignDetail != null) {
                 editRefCode.setText(womCampaignDetail.referralCode);
+                if (!TextUtils.isEmpty(womCampaignDetail.campaignBgColor))
+                    view.setBackgroundColor(Color.parseColor(womCampaignDetail.campaignBgColor));
+            }
             getUserRewardDetails();
             couponPoolsHeader.setOnClickListener(couponPoolsClickListener);
             customRefCodeHeader.setOnClickListener(customRefCodeClickListener);
@@ -154,9 +154,7 @@ public class EarningsFragment extends Fragment {
             tvPrev.setOnClickListener(prevClickListener);
             tvNext.setOnClickListener(nextClickListener);
             fragmentView = view;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Log.i("AppVirality UI", ex.getMessage());
         }
 
@@ -177,9 +175,9 @@ public class EarningsFragment extends Fragment {
                         if (!responseData.get("userBalance").equals(null)) {
                             JSONArray growthHacks = responseData.getJSONObject("userBalance").getJSONArray("growthHacks");
                             if (growthHacks.length() > 0) {
-                                userPendingRewards = new HashMap<>();
+                                userApprovedRewards = new HashMap<>();
                                 for (int i = 0; i < growthHacks.length(); i++) {
-                                    userPendingRewards.put(growthHacks.getJSONObject(i).getString("ghName"), growthHacks.getJSONObject(i).getInt("pending"));
+                                    userApprovedRewards.put(growthHacks.getJSONObject(i).getString("ghName"), growthHacks.getJSONObject(i).getInt("approved"));
 
                                     View earningsLayout = inflater.inflate(R.layout.earnings_layout, null);
                                     TextView tvTitle = (TextView) earningsLayout.findViewById(R.id.tv_title);
@@ -263,7 +261,7 @@ public class EarningsFragment extends Fragment {
                 JSONObject campaign = campaignArray.getJSONObject(i);
                 String ghType = campaign.getString("growthhack");
                 JSONArray couponPoolArray = campaign.getJSONArray("pools");
-                int userPendingReward = userPendingRewards.containsKey(ghType) ? userPendingRewards.get(ghType) : 0;
+                int userApprovedReward = userApprovedRewards.containsKey(ghType) ? userApprovedRewards.get(ghType) : 0;
                 for (int j = 0; j < couponPoolArray.length(); j++) {
                     JSONObject coupon = couponPoolArray.getJSONObject(j);
                     View view = inflater.inflate(R.layout.coupon_pools_item, null, false);
@@ -276,7 +274,7 @@ public class EarningsFragment extends Fragment {
                     if (i == campaignArray.length() - 1 && j == couponPoolArray.length() - 1)
                         view.findViewById(R.id.divider).setVisibility(View.GONE);
 
-                    if (userPendingReward < Integer.parseInt(coupon.getString("value")))
+                    if (userApprovedReward < Integer.parseInt(coupon.getString("value")))
                         btnClaim.setEnabled(false);
 
                     utils.downloadAndSetImage(coupon.getString("image"), companyLogo);
@@ -306,7 +304,7 @@ public class EarningsFragment extends Fragment {
             public void onResponse(boolean isRedeemed, String errorMsg) {
                 try {
                     progressBar.setVisibility(View.GONE);
-                    String toastMsg = isRedeemed ? "Coupon claimed successfully" : "Failed to claim coupon";
+                    String toastMsg = isRedeemed ? "Coupon claimed successfully" : errorMsg != null ? errorMsg :"Failed to claim coupon";
                     Toast.makeText(getActivity(), toastMsg, Toast.LENGTH_SHORT).show();
                     if (isRedeemed) {
                         getUserRewardDetails();

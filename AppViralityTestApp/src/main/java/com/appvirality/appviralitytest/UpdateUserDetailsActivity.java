@@ -20,6 +20,7 @@ public class UpdateUserDetailsActivity extends AppCompatActivity implements View
     CheckBox cbExistingUser;
     Utils utils;
     AppVirality appVirality;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +77,7 @@ public class UpdateUserDetailsActivity extends AppCompatActivity implements View
         });
     }
 
-    private void resetValues(){
+    private void resetValues() {
         editName.setText("");
         editEmail.setText("");
         editImageUrl.setText("");

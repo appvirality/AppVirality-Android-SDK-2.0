@@ -2,6 +2,7 @@ package com.appvirality.appviralityui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,14 @@ public class GridViewAdapter extends ArrayAdapter<SocialItem> {
         holder.title.setText(item.appname);
 //		if(item.getTitleColor() != -1)
 //			holder.title.setTextColor(item.getTitleColor());
-        holder.logo.setImageDrawable(context.getPackageManager().getDrawable(item.packagename, item.resId, null));
+        if (!item.isCustom || !TextUtils.isEmpty(item.packagename)) {
+            holder.logo.setImageDrawable(context.getPackageManager().getDrawable(item.packagename, item.resId, null));
+            row.setTag(R.string.custom_impl_tag, false);
+        } else if (item.isCustom) {
+            if (item.resId != 0)
+                holder.logo.setImageResource(item.resId);
+            row.setTag(R.string.custom_impl_tag, true);
+        }
         return row;
     }
 

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +27,8 @@ public class WelcomeScreenActivity extends Activity {
     AppVirality appVirality;
     Utils utils;
     String friendRewardEvent;
-    TextView tvReferrerDesc, tvSkipReferrer;
+    TextView tvWelcomeTitle, tvReferrerDesc, tvSkipReferrer;
+    RelativeLayout referralCodeLayout;
     EditText editTextRefCode;
     RoundedImageView imgProfile;
     Button btnSignUp;
@@ -49,14 +51,23 @@ public class WelcomeScreenActivity extends Activity {
     }
 
     private void setViewsData() throws Exception {
+        tvWelcomeTitle = (TextView) findViewById(R.id.tv_welcome_title);
         tvReferrerDesc = (TextView) findViewById(R.id.appvirality_reward_details);
         tvSkipReferrer = (TextView) findViewById(R.id.appvirality_skip_welcome);
         imgProfile = (RoundedImageView) findViewById(R.id.appvirality_user_profile);
         btnSignUp = (Button) findViewById(R.id.appvirality_btnsignup);
+        referralCodeLayout = (RelativeLayout) findViewById(R.id.referral_code_layout) ;
         editTextRefCode = (EditText) findViewById(R.id.editTextReferralCode);
         tvReferrerDesc.setText(referrerDetails.optString("welcomeMessage"));
-        if (!TextUtils.isEmpty(referrerDetails.optString("offerTitleColor")))
-            tvReferrerDesc.setTextColor(Color.parseColor(referrerDetails.optString("offerTitleColor")));
+        if (!TextUtils.isEmpty(referrerDetails.optString("offerTitleColor"))) {
+            int offerTitleColor = Color.parseColor(referrerDetails.optString("offerTitleColor"));
+            tvWelcomeTitle.setTextColor(offerTitleColor);
+            tvSkipReferrer.setTextColor(offerTitleColor);
+            findViewById(R.id.border_line).setBackgroundColor(offerTitleColor);
+        }
+        if (!TextUtils.isEmpty(referrerDetails.optString("offerDescriptionColor"))) {
+            tvReferrerDesc.setTextColor(Color.parseColor(referrerDetails.optString("offerDescriptionColor")));
+        }
         if (!TextUtils.isEmpty(referrerDetails.optString("profileImage"))) {
             imgProfile.setVisibility(View.VISIBLE);
             utils.downloadAndSetImage(referrerDetails.optString("profileImage"), imgProfile);
@@ -70,8 +81,8 @@ public class WelcomeScreenActivity extends Activity {
 
         // Displaying Welcome Message if Referrer has been confirmed
         if (attributionSetting.equals("0") || referrerDetails.getBoolean("isReferrerConfirmed")) {
-            if (editTextRefCode.getVisibility() == View.VISIBLE) {
-                ((TextView) findViewById(R.id.tv_welcome_title)).setText(getString(R.string.appvirality_welcome_title));
+            if (referralCodeLayout.getVisibility() == View.VISIBLE) {
+                tvWelcomeTitle.setText(getString(R.string.appvirality_welcome_title));
                 tvReferrerDesc.setVisibility(View.VISIBLE);
                 editTextRefCode.setEnabled(false);
                 btnSignUp.setVisibility(View.GONE);
@@ -82,11 +93,11 @@ public class WelcomeScreenActivity extends Activity {
             // and Referrer is not confirmed
             btnSignUp.setVisibility(View.VISIBLE);
             if (referrerDetails.getBoolean("hasReferrer")) {
-                ((TextView) findViewById(R.id.tv_welcome_title)).setText(getString(R.string.appvirality_welcome_title));
+                tvWelcomeTitle.setText(getString(R.string.appvirality_welcome_title));
                 tvReferrerDesc.setVisibility(View.VISIBLE);
                 // If user should enter Referral Code to get the Referrer Details
                 if (shouldEnterRefCode) {
-                    editTextRefCode.setVisibility(View.VISIBLE);
+                    referralCodeLayout.setVisibility(View.VISIBLE);
                     editTextRefCode.setText(referrerDetails.optString("referrerCode"));
                     btnSignUp.setText("Apply");
                 } else {
@@ -96,13 +107,14 @@ public class WelcomeScreenActivity extends Activity {
                 }
             } else {
                 // Doesn't have Referrer Details, user should enter the Referral Code
-                ((TextView) findViewById(R.id.tv_welcome_title)).setText(getString(R.string.appvirality_welcome_ref_code));
+                tvWelcomeTitle.setText(getString(R.string.appvirality_welcome_ref_code));
                 tvReferrerDesc.setVisibility(View.GONE);
                 imgProfile.setVisibility(View.GONE);
-                editTextRefCode.setVisibility(View.VISIBLE);
+                referralCodeLayout.setVisibility(View.VISIBLE);
                 btnSignUp.setText("Apply");
             }
         }
+
         if (!TextUtils.isEmpty(referrerDetails.optString("campaignBGColor")))
             findViewById(R.id.layout_welcome_screen).setBackgroundColor(Color.parseColor(referrerDetails.optString("campaignBGColor")));
 
@@ -145,7 +157,8 @@ public class WelcomeScreenActivity extends Activity {
             appVirality.submitReferralCode(refCode, new AppVirality.SubmitReferralCodeListener() {
                 @Override
                 public void onResponse(boolean isSuccess, JSONObject responseData, String errorMsg) {
-                    Toast.makeText(getApplicationContext(), isSuccess ? "Referral Code applied Successfully" : "Failed to apply referral code", Toast.LENGTH_SHORT).show();
+                    String message = isSuccess ? "Referral Code applied Successfully" : (errorMsg != null ? errorMsg : "Failed to apply referral code");
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                     refreshData(responseData);
                     finish();
                 }

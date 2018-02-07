@@ -78,9 +78,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_logout:
                 appVirality.logout();
+                utils.deleteCampaignImages();
                 Toast.makeText(MainActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
+                break;
+            case R.id.btn_check_attribution:
+                appVirality.checkAttribution(null, new AppVirality.CheckAttributionListener() {
+                    @Override
+                    public void onResponse(JSONObject responseData, String errorMsg) {
+                        Toast.makeText(getApplicationContext(), responseData != null ? "Response Callback" : errorMsg, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
         }
     }
@@ -100,9 +109,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(JSONObject responseData, String errorMsg) {
                 if (responseData != null) {
-                    String ghType = responseData.optString("growthhack");
                     String attributionSetting = responseData.optString("attributionSetting");
-                    if (!responseData.optBoolean("isExistingUser") && !(attributionSetting.equalsIgnoreCase("0") && !responseData.optBoolean("hasReferrer")) && (ghType.equalsIgnoreCase(Constants.GrowthHackType.Word_of_Mouth.name()) || ghType.equalsIgnoreCase(""))) {
+                    if (!responseData.optBoolean("isExistingUser") && !(attributionSetting.equalsIgnoreCase("0") && !responseData.optBoolean("hasReferrer"))) {
                         Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
                         intent.putExtra("referrer_details", responseData.toString());
                         startActivityForResult(intent, REG_SCREEN_REQ_CODE);
@@ -131,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void showMiniNotification(){
+    private void showMiniNotification() {
         appVirality.getCampaigns(null, new AppVirality.CampaignDetailsListener() {
             @Override
             public void onGetCampaignDetails(ArrayList<CampaignDetail> campaignDetails, boolean refreshImages, String errorMsg) {

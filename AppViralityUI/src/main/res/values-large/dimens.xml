@@ -1,6 +1,7 @@
 <resources>
     <!--<dimen name="app_icon_size">96px</dimen>-->
     <dimen name="campaign_image_margin">12dp</dimen>
+    <dimen name="divider_left_right_margin">90dp</dimen>
     <dimen name="campaign_title_desc_left_right_margin">30dp</dimen>
     <dimen name="campaign_title_desc_top_margin">10dp</dimen>
     <dimen name="campaign_share_code_padding">15dp</dimen>

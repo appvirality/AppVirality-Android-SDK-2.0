@@ -15,8 +15,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            android:visibility="?attr/av_show_toolbar"
+            android:visibility="gone"
+            app:contentInsetEnd="0dp"
             app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
             app:contentInsetStart="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -28,25 +30,11 @@
                     android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="15dp"
-                    android:text="?attr/av_toolbar_title"
-                    android:textColor="?attr/av_toolbar_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_terms_conditions"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:onClick="onClick"
-                    android:text="?attr/av_toolbar_terms"
-                    android:textColor="?attr/av_toolbar_text_color"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:gravity="center"
+                    android:textSize="18sp" />
 
             </RelativeLayout>
 

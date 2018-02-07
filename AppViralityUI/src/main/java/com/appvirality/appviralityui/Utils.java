@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -74,22 +75,26 @@ public class Utils {
 
     public void downloadAndSetImage(String imageUrl, ImageView imgView) {
         if (!TextUtils.isEmpty(imageUrl)) {
-            new ImgDownloadTask(imgView).execute(new String[]{imageUrl, null});
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                new ImgDownloadTask(imgView).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[]{null, imageUrl, null});
+            } else {
+                new ImgDownloadTask(imgView).execute(new String[]{null, imageUrl, null});
+            }
         }
     }
 
-    public void downloadAndSaveImage(String imageUrl, String imageName) {
-        boolean hasImage = !TextUtils.isEmpty(imageUrl) && !TextUtils.isEmpty(imageName);
-        if (hasImage) {
-            new ImgDownloadTask(null).execute(new String[]{imageUrl, imageName});
-        } else {
-            deleteImage(imageName);
+    public void downloadAndSaveImage(String socialAction, String imageUrl, String imageName) {
+        if (!TextUtils.isEmpty(imageUrl)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                new ImgDownloadTask(null).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, new String[]{socialAction, imageUrl, imageName});
+            } else {
+                new ImgDownloadTask(null).execute(new String[]{socialAction, imageUrl, imageName});
+            }
         }
     }
 
-    private Bitmap downloadImage(String imageUrl) {
+    private Bitmap downloadImage(String imageUrl, int redirectCount) {
         int number = 0;
-        int redirectCount = 0;
         boolean succeeded = false;
         Bitmap bitmapImage = null;
         HttpURLConnection connection = null;
@@ -104,7 +109,7 @@ public class Utils {
                 if (responseCode != HttpURLConnection.HTTP_OK && redirectCount <= 3) {
                     String newUrl = connection.getHeaderField("Location");
                     redirectCount++;
-                    return downloadImage(newUrl);
+                    return downloadImage(newUrl, redirectCount);
                 }
                 InputStream input = connection.getInputStream();
                 bitmapImage = BitmapFactory.decodeStream(input);
@@ -122,20 +127,20 @@ public class Utils {
         return bitmapImage;
     }
 
-    public void saveImageToExternalStorage(Context context, Bitmap campaignImage, String campaignImageName) {
+    public void saveImageToExternalStorage(Context context, Bitmap campaignImage, String socialAction, String imgName) {
         try {
+            Log.i("Utils class", "Inside Save Image Method");
             if (isExternalStorageWritable(context)) {
                 File dir = new File(directory);
                 if (!dir.exists())
                     dir.mkdirs();
 
                 FileOutputStream fOut = null;
-                if (campaignImageName != null) {
-                    File imgFile = new File(dir, campaignImageName);
+                if (imgName != null && campaignImage != null) {
+                    File imgFile = new File(dir, imgName);
                     fOut = new FileOutputStream(imgFile);
-                    campaignImage.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                    campaignImage.compress(Bitmap.CompressFormat.PNG, 100, fOut);
                 }
-
                 if (fOut != null) {
                     fOut.flush();
                     fOut.close();
@@ -145,26 +150,65 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        updatePathAndDeleteOldImage(socialAction, imgName, campaignImage != null);
     }
 
-    public void deleteImage(String campaignImageName) {
+    private void updatePathAndDeleteOldImage(String socialAction, String imgName, boolean hasImage) {
+        String imagePath = hasImage ? directory + "/" + imgName : null;
+        switch (socialAction.toLowerCase()) {
+            case "campaign":
+                if (!hasImage)
+                    deleteImage(appVirality.getCampaignImagePath());
+                appVirality.setCampaignImagePath(imagePath);
+                break;
+            case "instagram":
+                if (!hasImage)
+                    deleteImage(appVirality.getInstagramImagePath());
+                appVirality.setInstagramImagePath(imagePath);
+                break;
+            case "pinterest":
+                if (!hasImage)
+                    deleteImage(appVirality.getPinterestImagePath());
+                appVirality.setPinterestImagePath(imagePath);
+                break;
+            case "twitter":
+                if (!hasImage)
+                    deleteImage(appVirality.getTwitterImagePath());
+                appVirality.setTwitterImagePath(imagePath);
+                break;
+        }
+    }
+
+    public void deleteImage(String imgPath) {
         try {
-            File dir = new File(directory);
-            if (!dir.exists())
+            File imgFile = new File(imgPath);
+            if (!imgFile.exists())
                 return;
-            File imgFile = new File(dir, campaignImageName);
             imgFile.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public Bitmap readImageFromExtStorage(String imageName) {
+    public void deleteCampaignImages() {
+        try {
+            File dir = new File(directory);
+            if (!dir.exists())
+                return;
+            for (File file : dir.listFiles()) {
+                file.delete();
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    public Bitmap readImageFromExtStorage(String imagePath) {
+        Log.i("Utils class", "Inside Read Image Method");
         Bitmap bitmap = null;
         try {
-            File f = new File(directory, imageName);
+            File f = new File(imagePath);
             if (f.exists()) {
-                Log.d("Image", "Exists");
                 bitmap = BitmapFactory.decodeStream(new FileInputStream(f));
             }
         } catch (Exception e) {
@@ -288,28 +332,15 @@ public class Utils {
 
     public void refreshImages(CampaignDetail campaignDetail) {
         if (campaignDetail != null) {
-            downloadAndSaveImage(campaignDetail.campaignImgUrl, campaignDetail.campaignId + "-" + campaignDetail.campaignImgUrl.substring(campaignDetail.campaignImgUrl.lastIndexOf("/") + 1));
+            if (campaignDetail.campaignImgUrl != null && !campaignDetail.campaignImgUrl.contains("app-poster.png"))
+                downloadAndSaveImage("campaign", campaignDetail.campaignImgUrl, campaignDetail.campaignId + "-" + /*campaignDetail.campaignImgUrl.substring(campaignDetail.campaignImgUrl.lastIndexOf("/") + 1)*/ "campaign_image.png");
             for (SocialAction socialAction : campaignDetail.campaignSocialActions) {
-                boolean hasImage = !TextUtils.isEmpty(socialAction.shareImageUrl);
-                String imageName = campaignDetail.campaignId + "-" + socialAction.socialActionName.toLowerCase() + ".jpg";
-                String imagePath = hasImage ? directory + "/" + imageName : null;
+                String imageName = campaignDetail.campaignId + "-" + socialAction.socialActionName.toLowerCase() + ".png";
                 switch (socialAction.socialActionName.toLowerCase()) {
                     case "instagram":
-                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
-                        appVirality.setInstagramImagePath(imagePath);
-                        break;
                     case "pinterest":
-                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
-                        appVirality.setPinterestImagePath(imagePath);
-                        break;
                     case "twitter":
-                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
-                        appVirality.setTwitterImagePath(imagePath);
-                        break;
-                    case "whatsapp":
-                        downloadAndSaveImage(socialAction.shareImageUrl, imageName);
-                        appVirality.setWhatsAppImagePath(imagePath);
-                        break;
+                        downloadAndSaveImage(socialAction.socialActionName, socialAction.shareImageUrl, imageName);
                 }
             }
         }
@@ -325,9 +356,9 @@ public class Utils {
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            Bitmap bitmap = downloadImage(params[0]);
-            if (params[1] != null)
-                saveImageToExternalStorage(context, bitmap, params[1]);
+            Bitmap bitmap = downloadImage(params[1], 0);
+            if (params[2] != null)
+                saveImageToExternalStorage(context, bitmap, params[0], params[2]);
             return bitmap;
         }
 

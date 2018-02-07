@@ -3,7 +3,7 @@
     android:id="@+id/layout_welcome_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF4D4D"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:layout_marginTop="34dp"
             android:gravity="center"
             android:text="@string/appvirality_welcome_title"
-            android:textColor="#ffffff"
+            android:textColor="#ff0000"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -53,19 +53,36 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:gravity="center_horizontal"
-                android:textColor="#ffffff"
+                android:textColor="#ff0000"
                 android:textSize="18sp" />
 
-            <EditText
-                android:id="@+id/editTextReferralCode"
+            <RelativeLayout
+                android:id="@+id/referral_code_layout"
                 android:layout_width="230dp"
-                android:layout_height="50dp"
+                android:layout_height="51dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/welcome_email_bg"
-                android:hint="@string/appvirality_welcome_referral_code"
-                android:paddingLeft="10dp"
-                android:visibility="gone"/>
+                android:visibility="gone">
+
+                <View
+                    android:id="@+id/border_line"
+                    android:layout_width="230dp"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#ff0000" />
+
+                <EditText
+                    android:id="@+id/editTextReferralCode"
+                    android:layout_width="230dp"
+                    android:layout_height="50dp"
+                    android:layout_above="@+id/border_line"
+                    android:background="@null"
+                    android:gravity="center|bottom"
+                    android:hint="@string/appvirality_welcome_referral_code"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" />
+
+            </RelativeLayout>
 
             <Button
                 android:id="@+id/appvirality_btnsignup"
@@ -90,7 +107,7 @@
             android:layout_marginBottom="20dp"
             android:layout_marginTop="40dp"
             android:text="@string/appvirality_welcome_skip"
-            android:textColor="#ffffff"
+            android:textColor="#ff0000"
             android:textStyle="bold" />
     </LinearLayout>
 

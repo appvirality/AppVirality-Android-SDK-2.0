@@ -86,6 +86,15 @@
                 android:onClick="onClick"
                 android:text="Logout" />
 
+            <Button
+                android:id="@+id/btn_check_attribution"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:onClick="onClick"
+                android:text="Check Attribution" />
+
         </LinearLayout>
 
     </ScrollView>

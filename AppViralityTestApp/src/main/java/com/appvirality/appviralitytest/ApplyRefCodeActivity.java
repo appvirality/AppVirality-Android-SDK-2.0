@@ -59,7 +59,7 @@ public class ApplyRefCodeActivity extends AppCompatActivity {
                                 if (isSuccess) {
                                     Toast.makeText(ApplyRefCodeActivity.this, "Referral Code applied Successfully", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(ApplyRefCodeActivity.this, errorMsg!=null ? errorMsg : "Failed to apply referral code", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ApplyRefCodeActivity.this, errorMsg != null ? errorMsg : "Failed to apply referral code", Toast.LENGTH_SHORT).show();
                                 }
 //                            submitSignUpConversionEvent();
                             }

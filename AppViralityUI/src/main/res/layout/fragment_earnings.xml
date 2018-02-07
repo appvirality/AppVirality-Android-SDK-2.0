@@ -2,9 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#c9c9c9"
     android:fillViewport="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:scrollbars="none">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -80,7 +80,6 @@
                 android:id="@+id/coupon_pools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#ffffff"
                 android:orientation="vertical"
                 android:visibility="gone" />
 
@@ -210,7 +209,6 @@
                     android:id="@+id/friends_table"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
                     android:shrinkColumns="1"
                     android:stretchColumns="1" />
 
@@ -294,7 +292,6 @@
                     android:id="@+id/user_coupons_table"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#ffffff"
                     android:stretchColumns="0,1" />
 
             </LinearLayout>

@@ -2,6 +2,7 @@ package com.appvirality.appviralityui.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
@@ -35,7 +36,7 @@ public class WebViewActivity extends AppCompatActivity {
                 @Override
                 public void onGetCampaignTerms(String terms, String errorMsg) {
                     progressBar.setVisibility(View.GONE);
-                    terms = (terms == null) ? "No terms specified" : terms;
+                    terms = TextUtils.isEmpty(terms) ? "No terms specified." : terms;
                     webView.loadDataWithBaseURL(null, "<html><body>" + terms.replaceAll("\\n", "<br/>") + "</body></html>", "text/html", "UTF-8", null);
                     webView.setVisibility(View.VISIBLE);
                 }
