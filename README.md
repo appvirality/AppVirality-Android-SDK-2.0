@@ -15,7 +15,7 @@ Current Version : 2.0.6
 
 [Version Info](https://github.com/appvirality/appvirality-sdk-android/wiki/Android-SDK-Version-History)
 
-Help Documentation : (http://dev.appvirality.com)[http://dev.appvirality.com/docs/appvirality-docs/android-sdk-integration/]
+Help Documentation : [http://dev.appvirality.com](http://dev.appvirality.com/docs/appvirality-docs/android-sdk-integration/)
 
 Integrating Appvirality into your App
 -------------------------------------
