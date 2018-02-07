@@ -11,7 +11,7 @@ Appvirality Android SDK supports from Android (API level 9) and higher.
 Version History 
 ---------------
 
-Current Version : 2.0.5 
+Current Version : 2.0.6 
 
 [Version Info](https://github.com/appvirality/appvirality-sdk-android/wiki/Android-SDK-Version-History)
 
@@ -28,14 +28,14 @@ Throughout the document, invitation sender will be called as "Referrer" and rece
 Use Gradle dependency for core SDK + Default UI
 
 ```java
-    compile 'com.appvirality:AppViralityUI:2.0.5'
+    compile 'com.appvirality:AppViralityUI:2.0.6'
 ```
 
 OR
 
 Use Gradle dependency for core SDK
 ```java
-    compile 'com.appvirality:AppViralitySDK:2.0.5'
+    compile 'com.appvirality:AppViralitySDK:2.0.6'
 ```
 
 OR
