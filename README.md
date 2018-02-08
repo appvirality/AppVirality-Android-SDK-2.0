@@ -315,7 +315,7 @@ appVirality.getCampaigns(Constants.GrowthHackType.Word_of_Mouth, new AppVirality
                                     new com.appvirality.appviralityui.Utils(getApplicationContext()).refreshImages(womCampaignDetail);
 	    
                                    //If not using the AppViralityUI dependency copy the Utils class (https://github.com/appvirality/AppVirality-Android-SDK-2.0/blob/master/AppViralityUI/src/main/java/com/appvirality/appviralityui/Utils.java#L285-L301) and call the method "refreshImages()"
-                               }                 
+                                }                 
 	                	// Checking Popup visibility conditions as set by you on the AppVirality dashboard
 	                	if (appVirality.checkUserTargeting(womCampaignDetail, false))
 	                        	customPopUp.showPopUp(campaignDetails, womCampaignDetail);
@@ -354,7 +354,7 @@ appVirality.getCampaigns(Constants.GrowthHackType.Word_of_Mouth, new AppVirality
                                     new com.appvirality.appviralityui.Utils(getApplicationContext()).refreshImages(womCampaignDetail);
 	    
                                    //If not using the AppViralityUI dependency copy the Utils class (https://github.com/appvirality/AppVirality-Android-SDK-2.0/blob/master/AppViralityUI/src/main/java/com/appvirality/appviralityui/Utils.java#L285-L301) and call the method "refreshImages()"
-                               }                 
+                                }                 
 	                	// Checking Mini Notification visibility conditions as set by you on the AppVirality dashboard
 	                	if (appVirality.checkUserTargeting(womCampaignDetail, true))
 	                        	customPopUp.showMiniNotification(campaignDetails, womCampaignDetail);
