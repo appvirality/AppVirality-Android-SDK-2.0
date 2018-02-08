@@ -46,7 +46,7 @@ Copy AppVirality SDK jar to the <b>libs</b> folder of your application and then 
 
 Once you've registered with AppVirality.com and add a new app, you will be given an App key.
 
-![Alt text](https://github.com/appvirality/appvirality-sdk-android/blob/master/images/App-key-obtaining.jpg?raw=true)
+![Alt text](https://github.com/appvirality/appvirality-sdk-android/blob/master/images/App-Key.png?raw=true)
 
 
 <H4>STEP 3 - Configure the <b>AndroidManifest.xml</b> file of your project as follows</H4> 
