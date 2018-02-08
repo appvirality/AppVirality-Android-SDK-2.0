@@ -265,13 +265,13 @@ appVirality.getCampaigns(null, new AppVirality.CampaignDetailsListener() {
         	// Get Word of Mouth campaign details from list of campaign details
                 CampaignDetail womCampaignDetail = appVirality.getCampaignDetail(Constants.GrowthHackType.Word_of_Mouth, campaignDetails);
                 if (refreshImages) {
-            /** 
-             * Download and save WOM campaign images.
-             * if you are using the AppViralityUI dependency
-             */
-            new com.appvirality.appviralityui.Utils(getApplicationContext()).refreshImages(womCampaignDetail);
+                    /** 
+                     * Download and save WOM campaign images.
+                     * if you are using the AppViralityUI dependency
+                     */
+                    new com.appvirality.appviralityui.Utils(getApplicationContext()).refreshImages(womCampaignDetail);
 	    
-            //If not using the AppViralityUI dependency copy the Utils class (https://github.com/appvirality/AppVirality-Android-SDK-2.0/blob/master/AppViralityUI/src/main/java/com/appvirality/appviralityui/Utils.java#L285-L301) and call the method "refreshImages()"
+                    //If not using the AppViralityUI dependency copy the Utils class (https://github.com/appvirality/AppVirality-Android-SDK-2.0/blob/master/AppViralityUI/src/main/java/com/appvirality/appviralityui/Utils.java#L285-L301) and call the method "refreshImages()"
                 }                 
                 if (campaignDetails.size() > 0 && womCampaignDetail != null) {
                 	// Campaigns available, display Refer & Earn button or launch growth hack screen
