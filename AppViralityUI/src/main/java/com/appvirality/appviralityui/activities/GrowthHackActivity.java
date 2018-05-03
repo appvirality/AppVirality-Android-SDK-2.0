@@ -112,7 +112,7 @@ public class GrowthHackActivity extends AppCompatActivity implements ActivityCom
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case ReferFragment.READ_CONTACTS_PERMISSION_CODE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(GrowthHackActivity.this, InviteContactsActivity.class);
                     intent.putExtra("campaign_detail", womCampaignDetail);
                     startActivity(intent);

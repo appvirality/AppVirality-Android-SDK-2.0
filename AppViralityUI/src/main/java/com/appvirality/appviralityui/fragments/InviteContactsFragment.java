@@ -28,7 +28,6 @@ import com.appvirality.appviralityui.adapters.SectionCursorAdapter;
 import java.util.ArrayList;
 
 
-
 public class InviteContactsFragment extends Fragment implements LoaderManager.LoaderCallbacks {
 
     AppVirality appVirality;
@@ -36,7 +35,7 @@ public class InviteContactsFragment extends Fragment implements LoaderManager.Lo
     ListView lvContacts;
     String searchString = "";
     Cursor recentContactsCursor;
-    boolean isSmsFragment = true;
+    public boolean isSmsFragment = true;
     ProgressBar progressBar;
     ArrayList<String> selectedContactIds = new ArrayList();
     private static final String CONTACT_COLUMN_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
@@ -76,7 +75,7 @@ public class InviteContactsFragment extends Fragment implements LoaderManager.Lo
         super.onActivityCreated(savedInstanceState);
         appVirality = AppVirality.getInstance(getActivity());
         isSmsFragment = getArguments().getBoolean("is_sms_fragment");
-        adapter = new SectionCursorAdapter(getActivity(), null, lvContacts, selectedContactIds, isSmsFragment, onContactSelectedListener);
+        adapter = new SectionCursorAdapter(getActivity(), null, lvContacts, selectedContactIds, this, onContactSelectedListener);
         lvContacts.setAdapter(adapter);
         int[] attrs = {R.attr.av_earnings_bar_color};
         TypedArray typedValue = getActivity().obtainStyledAttributes(attrs);

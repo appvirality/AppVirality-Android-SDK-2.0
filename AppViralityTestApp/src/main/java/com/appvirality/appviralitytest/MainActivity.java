@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (appVirality != null && !appVirality.isExistingUser())
             showWelcomeScreen();
         // Get GCM Registration key to enable push notifications.
-        //Intent intent = new Intent(this, GcmRegistrationIntentService.class);
-        //startService(intent);
+//        Intent intent = new Intent(this, GcmRegistrationIntentService.class);
+//        startService(intent);
     }
 
     @Override
@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_invite_friends:
                 utils.showGrowthHack(appVirality);
                 break;
-            
             case R.id.btn_popup:
                 showCustomPopUp();
                 break;

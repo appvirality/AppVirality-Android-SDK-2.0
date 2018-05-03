@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -148,7 +149,7 @@ public class ReferFragment extends Fragment {
                 addUpperSocialItems(inflater);
 
                 if (womCampaignDetail.campaignSocialActions.contains(new SocialAction("InviteContacts"))
-                        /*&& (Utils.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS))*/) {
+                        && (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1 || Utils.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS))) {
                     tvShareVia.setText("Or Share Via");
                     if (!TextUtils.isEmpty(womCampaignDetail.campaignTitleColor)) {
                         btnInviteContacts.setBackgroundColor(Color.parseColor(womCampaignDetail.campaignTitleColor));
@@ -158,9 +159,13 @@ public class ReferFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             if (Utils.hasPermission(getActivity(), Manifest.permission.READ_CONTACTS)) {
-                                Intent intent = new Intent(getActivity(), InviteContactsActivity.class);
-                                intent.putExtra("campaign_detail", womCampaignDetail);
-                                startActivity(intent);
+                                try {
+                                    Intent intent = new Intent(getActivity(), InviteContactsActivity.class);
+                                    intent.putExtra("campaign_detail", womCampaignDetail);
+                                    startActivity(intent);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             } else {
                                 ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, READ_CONTACTS_PERMISSION_CODE);
                             }

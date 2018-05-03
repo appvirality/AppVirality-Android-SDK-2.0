@@ -3,7 +3,6 @@ package com.appvirality.appviralitytest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,13 +23,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  * Created by AppVirality on 4/19/2016.
  */
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText editReferralCode, editAppUserId, editPushToken, editEmail, editName, editMobileNo, editCity, editState, editCountry;
     CheckBox cbExistingUser;
@@ -80,16 +78,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btn_skip:
                 finishActivity();
-                break;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case WRITE_EXT_REQ_CODE:
-                checkPermission(READ_PHONE_STATE, WRITE_EXT_REQ_CODE);
                 break;
         }
     }

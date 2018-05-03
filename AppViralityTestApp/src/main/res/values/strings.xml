@@ -4,4 +4,5 @@
     <string name="product_sharing_scheme">appvirality</string>
     <string name="product_sharing_host">product-detail</string>
 
+    <string name="sign_up_btn_text">Sign Up</string>
 </resources>

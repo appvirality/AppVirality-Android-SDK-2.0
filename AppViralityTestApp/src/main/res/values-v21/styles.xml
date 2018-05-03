@@ -22,4 +22,12 @@
         <item name="av_show_coupons_bar">no</item>
         <item name="av_invite_contacts_action">both</item>-->
     </style>
+
+    <!--UnComment the below code to modify Sign Up button's
+    visibility and text on Welcome Screen-->
+    <!--<style name="MyAppViralityWelcomeTheme" parent="AppTheme.NoActionBar">
+        <item name="sign_up_btn_visible">true</item>
+        <item name="sign_up_btn_text">@string/sign_up_btn_text</item>
+    </style>-->
+
 </resources>

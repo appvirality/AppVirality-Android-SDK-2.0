@@ -1,5 +1,6 @@
 package com.appvirality.appviralityui.adapters;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,20 +16,21 @@ import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.appvirality.appviralityui.R;
 import com.appvirality.appviralityui.activities.InviteContactsActivity;
 import com.appvirality.appviralityui.custom.RoundedImageView;
+import com.appvirality.appviralityui.fragments.InviteContactsFragment;
 
 import java.util.ArrayList;
-
 
 
 public class SectionCursorAdapter extends CursorAdapter {
 
     Context context;
     LayoutInflater inflater;
-    boolean isSmsFragment;
+    InviteContactsFragment inviteContactsFragment;
     //    int recommendedContactsCount;
     int sectionCount;
     boolean isSearchOn;
@@ -42,13 +44,13 @@ public class SectionCursorAdapter extends CursorAdapter {
     private static final int TYPE_SECTION = 1;
     private static final String CONTACT_COLUMN_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
 
-    public SectionCursorAdapter(Context context, Cursor cursor, ListView listView, ArrayList<String> selectedContactIds, boolean isSmsFragment, InviteContactsActivity.OnContactSelectedListener onContactSelectedListener) {
+    public SectionCursorAdapter(Context context, Cursor cursor, ListView listView, ArrayList<String> selectedContactIds, InviteContactsFragment inviteContactsFragment, InviteContactsActivity.OnContactSelectedListener onContactSelectedListener) {
         super(context, cursor, false);
         this.context = context;
         this.listView = listView;
         this.selectedContactIds = selectedContactIds;
         recommendedContactIds = new ArrayList<>();
-        this.isSmsFragment = isSmsFragment;
+        this.inviteContactsFragment = inviteContactsFragment;
         this.onContactSelectedListener = onContactSelectedListener;
         inflater = LayoutInflater.from(context);
         init(cursor, null, false);
@@ -160,15 +162,19 @@ public class SectionCursorAdapter extends CursorAdapter {
         } else {
             viewHolder.ivContact.setImageResource(R.drawable.appvirality_user_image);
         }
-        viewHolder.tvContact.setText(cursor.getString(cursor.getColumnIndex(isSmsFragment ? CONTACT_COLUMN_NAME : ContactsContract.CommonDataKinds.Email.DATA)));
-        final String contactId = cursor.getString(cursor.getColumnIndex(isSmsFragment ? ContactsContract.Contacts._ID : ContactsContract.CommonDataKinds.Email.DATA));
+        viewHolder.tvContact.setText(cursor.getString(cursor.getColumnIndex(inviteContactsFragment.isSmsFragment ? CONTACT_COLUMN_NAME : ContactsContract.CommonDataKinds.Email.DATA)));
+        final String contactId = cursor.getString(cursor.getColumnIndex(inviteContactsFragment.isSmsFragment ? ContactsContract.Contacts._ID : ContactsContract.CommonDataKinds.Email.DATA));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (selectedContactIds.contains(contactId)) {
                     viewHolder.cbContact.setChecked(false);
                 } else {
-                    viewHolder.cbContact.setChecked(true);
+                    if (!inviteContactsFragment.isSmsFragment || hasValidSmsPhoneNo(contactId)) {
+                        viewHolder.cbContact.setChecked(true);
+                    } else {
+                        Toast.makeText(context, "Selected contact appears to have a helpline number. Please select another contact.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -211,8 +217,24 @@ public class SectionCursorAdapter extends CursorAdapter {
         if (sectionCount == 0 || position == 0) {
             return position;
         } else {
-            return (position <= recommendedContactIds.size()) || !isSmsFragment ? position - 1 : position - 2;
+            return (position <= recommendedContactIds.size()) || !inviteContactsFragment.isSmsFragment ? position - 1 : position - 2;
         }
+    }
+
+    private boolean hasValidSmsPhoneNo(String contactId) {
+        String phoneNo = null;
+        try {
+            ContentResolver cr = context.getContentResolver();
+            Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER},
+                    ContactsContract.Data.CONTACT_ID + "=?", new String[]{contactId}, null);
+            if (cursor.moveToFirst()) {
+                phoneNo = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            }
+            cursor.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return !TextUtils.isEmpty(phoneNo) && phoneNo.trim().length() > 7;
     }
 
     private View getDuplicateView(String selectedContactId, int selectedViewPos) {
@@ -221,7 +243,7 @@ public class SectionCursorAdapter extends CursorAdapter {
         for (int i = 0; i < listView.getChildCount(); i++) {
             int listPos = i + start;
             if (listPos != selectedViewPos && !isSection(listPos) && cursor.moveToPosition(getCursorPositionWithoutSections(listPos))
-                    && selectedContactId.equalsIgnoreCase(cursor.getString(cursor.getColumnIndex(isSmsFragment ? ContactsContract.Contacts._ID : ContactsContract.CommonDataKinds.Email.DATA)))) {
+                    && selectedContactId.equalsIgnoreCase(cursor.getString(cursor.getColumnIndex(inviteContactsFragment.isSmsFragment ? ContactsContract.Contacts._ID : ContactsContract.CommonDataKinds.Email.DATA)))) {
                 return listView.getChildAt(i);
             }
         }

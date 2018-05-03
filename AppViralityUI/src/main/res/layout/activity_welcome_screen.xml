@@ -92,7 +92,9 @@
                 android:layout_marginTop="60dp"
                 android:background="@drawable/btn_welcome_claim"
                 android:paddingLeft="26dp"
+                android:ellipsize="end"
                 android:paddingRight="26dp"
+                android:lines="1"
                 android:text="@string/appvirality_welcome_sign_up"
                 android:textColor="#ffffff"
                 android:visibility="gone" />

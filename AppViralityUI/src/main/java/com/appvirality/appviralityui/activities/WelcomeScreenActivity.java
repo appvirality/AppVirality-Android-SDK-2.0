@@ -2,6 +2,7 @@ package com.appvirality.appviralityui.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,18 +27,23 @@ public class WelcomeScreenActivity extends Activity {
     JSONObject referrerDetails;
     AppVirality appVirality;
     Utils utils;
-    String friendRewardEvent;
+    String friendRewardEvent, signUpBtnText;
     TextView tvWelcomeTitle, tvReferrerDesc, tvSkipReferrer;
     RelativeLayout referralCodeLayout;
     EditText editTextRefCode;
     RoundedImageView imgProfile;
     Button btnSignUp;
+    boolean isSignUpVisible;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_screen);
 
+        int[] attrs = {R.attr.sign_up_btn_visible, R.attr.sign_up_btn_text};
+        TypedArray typedValue = obtainStyledAttributes(attrs);
+        isSignUpVisible = typedValue.getBoolean(0, true);
+        signUpBtnText = typedValue.getString(1);
         String referrerDetailsStr = getIntent().getStringExtra("referrer_details");
         appVirality = AppVirality.getInstance(this);
         utils = new Utils(this);
@@ -91,7 +97,7 @@ public class WelcomeScreenActivity extends Activity {
         } else {
             // If Attribution Setting is Only Referral Code or (Referral Link + Referral Code)
             // and Referrer is not confirmed
-            btnSignUp.setVisibility(View.VISIBLE);
+//            btnSignUp.setVisibility(isSignUpVisible ? View.VISIBLE : View.GONE);
             if (referrerDetails.getBoolean("hasReferrer")) {
                 tvWelcomeTitle.setText(getString(R.string.appvirality_welcome_title));
                 tvReferrerDesc.setVisibility(View.VISIBLE);
@@ -99,11 +105,13 @@ public class WelcomeScreenActivity extends Activity {
                 if (shouldEnterRefCode) {
                     referralCodeLayout.setVisibility(View.VISIBLE);
                     editTextRefCode.setText(referrerDetails.optString("referrerCode"));
+                    btnSignUp.setVisibility(View.VISIBLE);
                     btnSignUp.setText("Apply");
                 } else {
                     imgProfile.setVisibility(View.VISIBLE);
                     editTextRefCode.setEnabled(false);
-                    btnSignUp.setText("Sign Up");
+                    btnSignUp.setVisibility(isSignUpVisible ? View.VISIBLE : View.GONE);
+                    btnSignUp.setText(!TextUtils.isEmpty(signUpBtnText) ? signUpBtnText : "Sign Up");
                 }
             } else {
                 // Doesn't have Referrer Details, user should enter the Referral Code
@@ -111,6 +119,7 @@ public class WelcomeScreenActivity extends Activity {
                 tvReferrerDesc.setVisibility(View.GONE);
                 imgProfile.setVisibility(View.GONE);
                 referralCodeLayout.setVisibility(View.VISIBLE);
+                btnSignUp.setVisibility(View.VISIBLE);
                 btnSignUp.setText("Apply");
             }
         }

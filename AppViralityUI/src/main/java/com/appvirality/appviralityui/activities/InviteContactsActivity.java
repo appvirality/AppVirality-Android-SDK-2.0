@@ -21,9 +21,6 @@ import com.appvirality.appviralityui.R;
 import com.appvirality.appviralityui.adapters.InviteContactsPagerAdapter;
 import com.appvirality.appviralityui.fragments.InviteContactsFragment;
 
-/**
- * Created by faraz on 1/11/2017.
- */
 
 public class InviteContactsActivity extends AppCompatActivity {
 

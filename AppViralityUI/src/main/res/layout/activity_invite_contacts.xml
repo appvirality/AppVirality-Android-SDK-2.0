@@ -61,6 +61,7 @@
         android:background="@drawable/bg_rect_gray"
         android:drawableRight="@drawable/search"
         android:hint="@string/search_contacts_hint"
+        android:lines="1"
         android:padding="8dp" />
 
     <RelativeLayout

@@ -1,18 +1,14 @@
 package com.appvirality.appviralitytest;
 
 import android.app.Application;
-import android.content.Intent;
 
 import com.appvirality.AppVirality;
 import com.appvirality.Config;
-
-import org.json.JSONObject;
 
 
 public class AppViralityTestApplication extends Application {
 
     AppVirality appVirality;
-    static boolean isDisplayingActivity;
 
     @Override
     public void onCreate() {

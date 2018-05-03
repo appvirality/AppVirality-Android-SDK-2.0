@@ -32,4 +32,9 @@
             <enum name="both" value="2" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="WelcomeScreen">
+        <attr name="sign_up_btn_visible" format="boolean"/>
+        <attr name="sign_up_btn_text" format="string"/>
+    </declare-styleable>
 </resources>
