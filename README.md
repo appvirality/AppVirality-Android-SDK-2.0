@@ -28,14 +28,14 @@ Throughout the document, invitation sender will be called as "Referrer" and rece
 Use Gradle dependency for core SDK + Default UI
 
 ```java
-    compile 'com.appvirality:AppViralityUI:2.0.6'
+    compile 'com.appvirality:AppViralityUI:2.0.8'
 ```
 
 OR
 
 Use Gradle dependency for core SDK
 ```java
-    compile 'com.appvirality:AppViralitySDK:2.0.6'
+    compile 'com.appvirality:AppViralitySDK:2.0.8'
 ```
 
 OR
