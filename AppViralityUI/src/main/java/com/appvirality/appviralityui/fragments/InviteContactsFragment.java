@@ -81,6 +81,20 @@ public class InviteContactsFragment extends Fragment implements LoaderManager.Lo
         TypedArray typedValue = getActivity().obtainStyledAttributes(attrs);
         earningsBarColor = typedValue.getColor(0, Color.BLACK);
         progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getLoaderManager().destroyLoader(RECENT_CONTACTS_LOADER_ID);
+        getLoaderManager().destroyLoader(CONTACTS_LOADER_ID);
+        getLoaderManager().destroyLoader(NUMBERS_LOADER_ID);
+        getLoaderManager().destroyLoader(EMAIL_LOADER_ID);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         if (isSmsFragment) {
             getLoaderManager().initLoader(RECENT_CONTACTS_LOADER_ID, null, this);
         } else {
