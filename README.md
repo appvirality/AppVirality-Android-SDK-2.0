@@ -154,7 +154,7 @@ Copy the following style in your styles.xml to create a NoActionBar theme.
 ```
 5) <b>File Provider</b>: For posting campaign image with the invite message on some social networks, you need to share the image with the corresponding social network app. As Google recommends using Content URI, you need to declare the same in your app for sharing the image’s Content URI with such social network apps. To do so follow the below two steps.
 
-Create file provider_paths.xml under App -> res -> xml folder and declare the path inside it where you are storing your campaign images. If you are using AppViralityUI module or storing images in external storage you can use the below code else please check out this [link](https://developer.android.com/reference/android/support/v4/content/FileProvider) to find the proper declaration for your storage directory.
+Create file provider_paths.xml under App -> res -> xml folder and declare the path inside it where you are storing your campaign images. If you are using AppViralityUI module or storing images in external storage you can use the below code else please check out this [link](https://developer.android.com/reference/android/support/v4/content/FileProvider){:target="_blank"} to find the proper declaration for your storage directory.
 
 ```java
 <?xml version="1.0" encoding="utf-8"?>
