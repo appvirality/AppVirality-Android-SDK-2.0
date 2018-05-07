@@ -244,7 +244,7 @@ NOTE: please make sure to call the init on each launch with user email to fetch 
 
 <H4>STEP 5 - Launching Growth Hack</H4>
 
-In-App referral growth hack can be launched in 3 different ways. You can use any/all of these 3 options to launch the growth hack.
+In-App referral growth hack can be launched in 3 different ways. You can use any/all of these 3 options to launch the growth hack .
 
 ##### Option 1 - Launch from custom button i.e from "Invite Friends" or "Refer & Earn" button on your App menu
 
