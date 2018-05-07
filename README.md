@@ -85,7 +85,6 @@ Once you've registered with AppVirality.com and add a new app, you will be given
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Optional permissions. WRITE_EXTERNAL_STORAGE and READ_EXTERNAL_STORAGE are used to improve the performance by storing and reading campaign images. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- Optional permissions. READ_PHONE_STATE is used to read device id and other device params to recognize a user. -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- Optional permissions. READ_CONTACTS is used to read device contacts for implementing InviteContacts social action. -->
@@ -153,7 +152,36 @@ Copy the following style in your styles.xml to create a NoActionBar theme.
     <item name="windowNoTitle">true</item>
 </style>
 ```
+5) <b>File Provider</b>: For posting campaign image with the invite message on some social networks, you need to share the image with the corresponding social network app. As Google recommends using Content URI, you need to declare the same in your app for sharing the image’s Content URI with such social network apps. To do so follow the below two steps.
 
+Create file provider_paths.xml under App -> res -> xml folder and declare the path inside it where you are storing your campaign images. If you are using AppViralityUI module or storing images in external storage you can use the below code else please check out this [link](https://developer.android.com/reference/android/support/v4/content/FileProvider) to find the proper declaration for your storage directory.
+
+```java
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        name="external_files"
+        path="." />
+</paths>
+```
+
+Now declare the above created provider paths file in your application manifest. To do so please copy the below code in your application manifest under <application></application> element.
+
+```java
+<application android:label="@string/app_name" ...>
+    ...
+    <provider
+        android:name="android.support.v4.content.FileProvider"
+        android:authorities="${applicationId}.provider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/provider_paths" />
+    </provider>
+    ...
+</application>
+```
 
 <H4>STEP 4 - Initializing the AppVirality SDK</H4>
 
