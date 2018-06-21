@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -17,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
@@ -28,6 +30,7 @@ import com.appvirality.Constants;
 import com.appvirality.SocialAction;
 import com.appvirality.appviralityui.activities.GrowthHackActivity;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -46,11 +49,12 @@ public class Utils {
     ProgressDialog progressDialog;
     AppVirality appVirality;
     public static final String TAG = "AppViralityTestApp";
-    public static final String directory = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.androidlav";
+    private static String directory /*= Environment.getExternalStorageDirectory().getAbsolutePath() + "/.androidlav"*/;
 
     public Utils(Context context) {
         this.context = context;
         appVirality = AppVirality.getInstance(context);
+        directory = context.getFilesDir().getAbsolutePath() + "/.androidlav";
     }
 
     public static boolean hasInternet(Context context) {
@@ -130,7 +134,7 @@ public class Utils {
     public void saveImageToExternalStorage(Context context, Bitmap campaignImage, String socialAction, String imgName) {
         try {
             Log.i("Utils class", "Inside Save Image Method");
-            if (isExternalStorageWritable(context)) {
+//            if (isExternalStorageWritable(context)) {
                 File dir = new File(directory);
                 if (!dir.exists())
                     dir.mkdirs();
@@ -146,7 +150,7 @@ public class Utils {
                     fOut.close();
                 }
                 campaignImage.recycle();
-            }
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

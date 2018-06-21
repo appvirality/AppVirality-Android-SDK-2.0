@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             editReferralCode.setText(referralCode);
 
 //        cbExistingUser.setChecked(appVirality.isExistingUser());
-        checkPermission(WRITE_EXTERNAL_STORAGE, WRITE_EXT_REQ_CODE);
+//        checkPermission(WRITE_EXTERNAL_STORAGE, WRITE_EXT_REQ_CODE);
     }
 
     @Override

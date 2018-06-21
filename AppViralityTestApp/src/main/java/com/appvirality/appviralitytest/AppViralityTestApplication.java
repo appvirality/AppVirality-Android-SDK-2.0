@@ -2,6 +2,7 @@ package com.appvirality.appviralitytest;
 
 import android.app.Application;
 
+
 import com.appvirality.AppVirality;
 import com.appvirality.Config;
 
@@ -20,6 +21,7 @@ public class AppViralityTestApplication extends Application {
         //config.runEmulatorChecks = true;
         //config.runRootChecks = true;
         //adding custom social actions having Apps with sharable intents
+        
         //config.setCustomSocialActionData("Hootsuite", "com.hootsuite.droid.full", null, false, 0);
         //config.setCustomSocialActionData("Buffer", "org.buffer.android", null, false, 0);
        

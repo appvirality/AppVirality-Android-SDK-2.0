@@ -97,6 +97,8 @@ public class ReferFragment extends Fragment {
                     } else if (womCampaignDetail.campaignImgUrl.contains("app-poster.png")) {
                         ivCampaignBg.setVisibility(View.VISIBLE);
                         ivCampaignBg.setImageResource(R.drawable.refer_image);
+                    } else {
+                        utils.refreshImages(womCampaignDetail);
                     }
                 }
 

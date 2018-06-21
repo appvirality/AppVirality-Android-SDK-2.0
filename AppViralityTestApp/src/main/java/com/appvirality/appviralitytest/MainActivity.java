@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appvirality.AppVirality;
@@ -21,6 +22,7 @@ import com.appvirality.appviralityui.activities.WelcomeScreenActivity;
 import com.appvirality.appviralityui.custom.CustomPopUp;
 
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -83,12 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 finish();
                 break;
             case R.id.btn_check_attribution:
-                appVirality.checkAttribution(null, new AppVirality.CheckAttributionListener() {
-                    @Override
-                    public void onResponse(JSONObject responseData, String errorMsg) {
-                        Toast.makeText(getApplicationContext(), responseData != null ? "Response Callback" : errorMsg, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                showCheckAttributionDialog();
                 break;
         }
     }
@@ -101,6 +98,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             loginIntent.putExtra("referral_code", data.getStringExtra("referral_code"));
             startActivity(loginIntent);
         }
+    }
+
+    private void showCheckAttributionDialog(){
+        final Dialog popUp = new Dialog(MainActivity.this);
+        popUp.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        popUp.setCancelable(true);
+        popUp.setContentView(R.layout.dialog_check_attribution);
+        final EditText editRefCode = (EditText) popUp.findViewById(R.id.edit_ref_code);
+        final TextView tvResponse = (TextView) popUp.findViewById(R.id.tv_response);
+        popUp.findViewById(R.id.btn_submit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String refCode = editRefCode.getText().toString().trim();
+                appVirality.checkAttribution(refCode, new AppVirality.CheckAttributionListener() {
+                    @Override
+                    public void onResponse(JSONObject responseData, String errorMsg) {
+                        if (responseData != null) {
+                            tvResponse.setText(responseData.toString());
+                        } else {
+                            tvResponse.setText("Response is null. Error : " + errorMsg);
+                        }
+                    }
+                });
+            }
+        });
+        popUp.show();
     }
 
     private void showWelcomeScreen() {
