@@ -220,8 +220,12 @@ public class InviteContactsFragment extends Fragment implements LoaderManager.Lo
     }
 
     public void searchContacts(String searchString) {
-        this.searchString = searchString;
-        getLoaderManager().restartLoader(isSmsFragment ? (searchString.equals("") ? RECENT_CONTACTS_LOADER_ID : CONTACTS_LOADER_ID) : EMAIL_LOADER_ID, null, InviteContactsFragment.this);
+        try {
+            this.searchString = searchString;
+            getLoaderManager().restartLoader(isSmsFragment ? (searchString.equals("") ? RECENT_CONTACTS_LOADER_ID : CONTACTS_LOADER_ID) : EMAIL_LOADER_ID, null, InviteContactsFragment.this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private ArrayList<String> getRecommendedContactIds(Cursor cursor) {

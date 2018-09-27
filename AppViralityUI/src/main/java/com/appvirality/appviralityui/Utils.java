@@ -58,9 +58,12 @@ public class Utils {
     }
 
     public static boolean hasInternet(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        if (hasPermission(context, Manifest.permission.ACCESS_NETWORK_STATE)) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return true;
     }
 
     public static boolean hasPermission(Context context, String permission) {
@@ -68,14 +71,14 @@ public class Utils {
         return hasPermission == PackageManager.PERMISSION_GRANTED;
     }
 
-    public static boolean isExternalStorageWritable(Context context) {
-        try {
-            return (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) &&
-                    hasPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE));
-        } catch (Exception e) {
-        }
-        return false;
-    }
+//    public static boolean isExternalStorageWritable(Context context) {
+//        try {
+//            return (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) &&
+//                    hasPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE));
+//        } catch (Exception e) {
+//        }
+//        return false;
+//    }
 
     public void downloadAndSetImage(String imageUrl, ImageView imgView) {
         if (!TextUtils.isEmpty(imageUrl)) {
